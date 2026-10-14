@@ -6,11 +6,12 @@
   <meta name="description" content="沿海台风实况与预警平台演示页面">
   <title>海风哨｜台风实况与预警</title>
   <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="live.css">
 </head>
 <body>
-  <div class="demo-banner" role="status">
-    <strong>演示模式</strong>
-    <span>本页所有台风、路径和预警数据均为虚构，仅用于界面展示，不可作为防灾决策依据。</span>
+  <div class="demo-banner" role="status" id="dataBanner">
+    <strong>权威来源</strong>
+    <span>台风实况与路径来自浙江省水利厅公开系统；本站仅作信息展示，请以当地气象台和政府通知为准。</span>
   </div>
 
   <header class="site-header">
@@ -31,55 +32,55 @@
   <main id="top">
     <section class="hero" id="overview">
       <div class="hero-copy">
-        <div class="status-line"><span class="live-dot"></span> 台风实况演示 <i></i> 数据时间 10月14日 14:00</div>
-        <p class="storm-code">TY 2026 · 22</p>
-        <h1>台风「海燕」<span>HAIYAN</span></h1>
-        <p class="summary">位于厦门东南方向约 <strong>420</strong> 公里海面，<br>正以每小时 <strong>15</strong> 公里向西北方向移动。</p>
+        <div class="status-line"><span class="live-dot"></span> <span id="stormStatus">正在载入台风实况</span> <i></i> <span id="dataTime">数据时间 —</span></div>
+        <p class="storm-code" id="stormCode">TY —</p>
+        <h1 id="stormName">载入中<span>LOADING</span></h1>
+        <p class="summary" id="stormSummary">正在从定时抓取的数据中读取最新台风信息。</p>
         <div class="hero-actions">
           <a class="primary-button" href="#track">查看完整路径 <span>↘</span></a>
-          <span class="impact-time"><small>预计主要影响时段</small><b>明日 08:00 — 20:00</b></span>
+          <span class="impact-time"><small>自动更新时间</small><b id="fetchTime">每 15 分钟抓取一次</b></span>
         </div>
       </div>
 
       <aside class="warning-hero" aria-label="当前最高预警">
         <div class="warning-shine"></div>
-        <div class="warning-top"><span>当前最高预警</span><small>演示数据</small></div>
-        <div class="warning-level"><span class="warning-icon" aria-hidden="true">!</span><div><b>台风黄色预警</b><small>Ⅲ级 · 较重</small></div></div>
-        <p>厦门市气象台（演示）<br>10月14日 13:30 发布</p>
+        <div class="warning-top"><span>来源系统预警状态</span><small id="freshnessBadge">载入中</small></div>
+        <div class="warning-level"><span class="warning-icon" aria-hidden="true">!</span><div><b id="heroWarning">正在读取</b><small id="heroWarningLevel">—</small></div></div>
+        <p><a class="inline-source" href="https://typhoon.slt.zj.gov.cn/" target="_blank" rel="noopener">浙江省水利厅台风路径系统 ↗</a><br><span id="sourceUpdate">抓取时间 —</span></p>
         <a href="#warnings">查看预警详情与防御指南 <span>→</span></a>
       </aside>
     </section>
 
     <section class="metric-grid" aria-label="台风核心实况">
       <article>
-        <div class="metric-head"><span class="metric-icon wind">≈</span><span>中心附近最大风力</span><em>演示</em></div>
-        <div class="metric-value"><b>13</b><span>级</span></div>
-        <p>38 米/秒 · 台风级</p>
+        <div class="metric-head"><span class="metric-icon wind">≈</span><span>中心附近最大风力</span><em>实况</em></div>
+        <div class="metric-value"><b id="windLevel">—</b><span>级</span></div>
+        <p id="windSpeed">— 米/秒 · —</p>
         <div class="scale"><i></i><i></i><i></i><i class="current"></i><i></i></div>
       </article>
       <article>
-        <div class="metric-head"><span class="metric-icon pressure">◉</span><span>中心最低气压</span><em>演示</em></div>
-        <div class="metric-value"><b>965</b><span>百帕</span></div>
-        <p>较 3 小时前下降 5 百帕</p>
+        <div class="metric-head"><span class="metric-icon pressure">◉</span><span>中心最低气压</span><em>实况</em></div>
+        <div class="metric-value"><b id="pressure">—</b><span>百帕</span></div>
+        <p id="pressureTrend">来源系统最新观测</p>
         <div class="trend"><svg viewBox="0 0 180 24" aria-hidden="true"><path d="M2 4 C35 3, 43 8, 68 9 S104 11, 122 15 S153 16,178 22"/></svg><span>强度增强</span></div>
       </article>
       <article>
-        <div class="metric-head"><span class="metric-icon direction">➤</span><span>移动方向与速度</span><em>演示</em></div>
-        <div class="metric-value"><b>西北</b><span class="speed">15 公里/时</span></div>
-        <p>预计未来 12 小时方向稳定</p>
+        <div class="metric-head"><span class="metric-icon direction">➤</span><span>移动方向与速度</span><em>实况</em></div>
+        <div class="metric-value"><b id="moveDirection">—</b><span class="speed" id="moveSpeed">— 公里/时</span></div>
+        <p>移动方向与速度以最新观测为准</p>
         <div class="compass"><i>NW</i><span>➤</span><small>SE</small></div>
       </article>
       <article>
-        <div class="metric-head"><span class="metric-icon distance">⌖</span><span>距厦门市</span><em>演示</em></div>
-        <div class="metric-value"><b>420</b><span>公里</span></div>
-        <p>东南方向 · 持续接近</p>
+        <div class="metric-head"><span class="metric-icon distance">⌖</span><span>中心位置</span><em>实况</em></div>
+        <div class="metric-value"><b id="latitude">—</b><span>°N</span></div>
+        <p id="longitude">— °E</p>
         <div class="distance-line"><i></i><span>厦门</span></div>
       </article>
     </section>
 
     <section class="track-section" id="track">
       <div class="section-heading">
-        <div><span class="eyebrow">TRACK & FORECAST · 演示数据</span><h2>台风路径示意</h2></div>
+        <div><span class="eyebrow">TRACK & FORECAST · 浙江省水利厅数据</span><h2>台风路径</h2></div>
         <div class="time-tabs" role="group" aria-label="预报时效">
           <button class="active" data-hours="72">未来 72 小时</button>
           <button data-hours="48">48 小时</button>
@@ -88,7 +89,7 @@
       </div>
 
       <div class="map-card">
-        <div class="map-note"><span>!</span><p><b>路径为演示数据</b><small>虚构路径，不代表任何真实台风预报</small></p></div>
+        <div class="map-note"><span>i</span><p><b id="mapStatus">正在载入真实路径数据</b><small>预报路径存在不确定性，请勿用于导航</small></p></div>
         <svg class="track-map" viewBox="0 0 1000 520" role="img" aria-labelledby="mapTitle mapDesc">
           <title id="mapTitle">台风海燕演示路径图</title>
           <desc id="mapDesc">虚构台风从东南海面向西北方向接近厦门的路径示意</desc>
@@ -101,19 +102,7 @@
           <g class="land"><path d="M0 0H328L302 48 321 91 286 128 297 172 254 208 265 250 223 286 234 327 191 361 202 402 155 437 168 478 132 520H0Z"/><path d="M836 0h164v122l-38-3-23-32-42-14-19-42z"/></g>
           <g class="islands"><path d="M314 180l14-4 11 12-8 16-16-5z"/><path d="M254 382l9-3 7 9-5 11-11-4z"/><path d="M573 369l16-8 17 10-2 20-18 8-17-12z"/></g>
           <g class="coast-labels"><text x="92" y="158">福 建</text><text x="152" y="304">广 东</text><text x="852" y="66">台 湾</text><text x="315" y="171">厦门</text><text x="246" y="371">汕头</text><text x="584" y="360">东沙群岛</text><text class="sea" x="602" y="178">南 海</text></g>
-          <path class="forecast-cone" d="M693 373 C615 345 541 304 471 254 C417 215 372 181 324 153 L299 205 C361 232 409 265 457 305 C525 361 597 410 685 442Z"/>
-          <path class="track-history" d="M821 466 C775 433 739 409 693 402"/>
-          <path class="track-forecast" data-path="72" d="M693 402 C628 375 574 345 518 309 S407 232 326 184"/>
-          <g class="path-points">
-            <circle class="past" cx="821" cy="466" r="7"/><circle class="past" cx="758" cy="430" r="7"/>
-            <g class="current-point"><circle cx="693" cy="402" r="30"/><circle cx="693" cy="402" r="18"/><text x="693" y="409">🌀</text></g>
-            <g class="forecast-point"><circle cx="613" cy="365" r="8"/><text x="625" y="357">今天 20:00</text><small></small></g>
-            <g class="forecast-point"><circle cx="518" cy="309" r="8"/><text x="530" y="300">明天 08:00</text></g>
-            <g class="forecast-point"><circle cx="421" cy="244" r="8"/><text x="433" y="236">明天 20:00</text></g>
-            <g class="forecast-point"><circle cx="326" cy="184" r="8"/><text x="340" y="176">16日 08:00</text></g>
-          </g>
-          <g class="wind-rings" transform="translate(693 402)"><ellipse rx="94" ry="68"/><ellipse rx="62" ry="46"/><text x="64" y="-36">7级风圈</text><text x="24" y="-19">10级</text></g>
-          <g class="current-label" transform="translate(705 413)"><rect width="160" height="55" rx="12"/><text x="14" y="22">当前位置 · 演示</text><text class="small" x="14" y="41">13级 · 965 hPa</text></g>
+          <g id="dynamicTrack"></g>
           <g class="map-scale"><path d="M30 475h100"/><path d="M30 469v12M130 469v12"/><text x="58" y="500">100 km</text></g>
         </svg>
         <div class="map-legend"><span><i class="observed"></i>历史路径</span><span><i class="forecasted"></i>预报路径</span><span><i class="uncertainty"></i>不确定性范围</span><small>底图仅作示意，不用于导航</small></div>
@@ -123,14 +112,14 @@
     <section class="warnings-section" id="warnings">
       <div class="section-heading">
         <div><span class="eyebrow">OFFICIAL WARNING DEMO</span><h2>预警与防御</h2></div>
-        <span class="source-stamp">以下均为演示预警 · 非官方发布</span>
+        <span class="source-stamp">仅转述来源系统状态 · 请核对当地官方预警</span>
       </div>
       <div class="warning-layout">
-        <article class="warning-card yellow">
-          <div class="warning-card-head"><span class="alert-symbol">!</span><div><small>演示预警</small><h3>台风黄色预警</h3><p>Ⅲ级 · 较重</p></div><time>13:30</time></div>
-          <p class="warning-copy">预计未来 24 小时内，厦门沿海地区可能出现平均风力 8 级以上、阵风 10 级以上的大风。本信息为虚构演示。</p>
-          <div class="issuer"><span>发布机构</span><b>厦门市气象台（演示）</b><span>适用地区</span><b>厦门市（演示）</b></div>
-          <button type="button" id="warningDetail">查看演示详情 <span>→</span></button>
+        <article class="warning-card" id="warningCard">
+          <div class="warning-card-head"><span class="alert-symbol">!</span><div><small>来源系统状态</small><h3 id="warningTitle">载入中</h3><p id="warningSeverity">—</p></div><time id="warningTime">—</time></div>
+          <p class="warning-copy" id="warningCopy">正在读取浙江省水利厅台风路径系统状态。本站不会根据风力自行发布官方预警。</p>
+          <div class="issuer"><span>数据来源</span><b>浙江省水利厅台风路径系统</b><span>适用地区</span><b>请以预警原文为准</b></div>
+          <button type="button" id="warningDetail">查看安全说明 <span>→</span></button>
         </article>
         <div class="action-panel">
           <div class="action-title"><span>现在建议做什么</span><small>通用演示建议，请以当地官方指引为准</small></div>
@@ -152,15 +141,15 @@
 
   <footer>
     <div class="brand compact"><span class="brand-mark"><i></i><i></i><i></i></span><span><b>海风哨</b><small>让每一次预警，都清楚抵达。</small></span></div>
-    <p><strong>重要提示：</strong>本页面全部信息均为演示数据，不对应任何真实台风或官方预警。<br>实际灾害期间请以当地气象台、应急管理部门和政府通知为准。</p>
+    <p><strong>重要提示：</strong>本站自动转述浙江省水利厅公开台风数据，不自行发布预报或预警。<br>数据可能延迟或中断；实际灾害期间请以当地气象台、应急管理部门和政府通知为准。</p>
     <span>DEMO · 2026</span>
   </footer>
 
   <dialog id="warningDialog">
     <button class="dialog-close" type="button" aria-label="关闭">×</button>
-    <span class="dialog-tag">演示数据 · 非官方预警</span>
-    <h2>台风黄色预警</h2>
-    <p>这是一条用于展示页面交互和信息层级的虚构预警，不表示厦门或任何地区正受到台风影响。</p>
+    <span class="dialog-tag">安全说明 · 本站不发布预警</span>
+    <h2>如何确认官方预警</h2>
+    <p>本站展示的预警状态来自上游公开数据，但不能替代属地气象台和政府发布的正式预警。</p>
     <h3>真实情况下请这样确认</h3>
     <ul><li>查看当地气象台或政府官方渠道。</li><li>核对发布机构、时间、适用地区及预警状态。</li><li>遵守当地应急部门的停课、停航或转移通知。</li></ul>
   </dialog>
