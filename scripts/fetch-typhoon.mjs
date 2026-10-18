@@ -1,4 +1,4 @@
-import { mkdir, readFile, writeFile } from 'node:fs/promises';
+import { appendFile, mkdir, readFile, writeFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 
 const API = 'https://typhoon.slt.zj.gov.cn/Api';
@@ -82,18 +82,21 @@ async function main() {
   };
   let previous = '';
   try { previous = await readFile(OUTPUT, 'utf8'); } catch {}
+  let dataChanged = true;
+  let dataChangedAt = payload.fetchedAt;
   if (previous) {
     try {
       const oldPayload = JSON.parse(previous);
-      if (JSON.stringify({ ...oldPayload, fetchedAt: null }) === JSON.stringify({ ...payload, fetchedAt: null })) {
-        console.log('上游数据无变化，保留现有文件。');
-        return;
-      }
+      const stable = ({ fetchedAt, dataChangedAt: ignoredChangedAt, ...value }) => value;
+      dataChanged = JSON.stringify(stable(oldPayload)) !== JSON.stringify(stable(payload));
+      dataChangedAt = dataChanged ? payload.fetchedAt : (oldPayload.dataChangedAt || oldPayload.fetchedAt || payload.fetchedAt);
     } catch {}
   }
+  payload.dataChangedAt = dataChangedAt;
   await mkdir(dirname(OUTPUT), { recursive: true });
   await writeFile(OUTPUT, `${JSON.stringify(payload, null, 2)}\n`, 'utf8');
-  console.log(`已写入 ${OUTPUT}：${payload.activeCount} 个活动台风，模式 ${payload.mode}`);
+  if (process.env.GITHUB_OUTPUT) await appendFile(process.env.GITHUB_OUTPUT, `data_changed=${dataChanged}\n`, 'utf8');
+  console.log(`已写入 ${OUTPUT}：${payload.activeCount} 个活动台风，模式 ${payload.mode}，数据${dataChanged ? '已变化' : '无变化'}。`);
 }
 
 main().catch((error) => { console.error(error); process.exitCode = 1; });

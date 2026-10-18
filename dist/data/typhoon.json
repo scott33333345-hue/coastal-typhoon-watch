@@ -5,7 +5,7 @@
     "url": "https://typhoon.slt.zj.gov.cn/",
     "listEndpoint": "https://typhoon.slt.zj.gov.cn/Api/TyphoonList/2026"
   },
-  "fetchedAt": "2026-10-18T09:39:48.238Z",
+  "fetchedAt": "2026-10-18T11:23:56.416Z",
   "year": 2026,
   "activeCount": 1,
   "mode": "live",
@@ -550,5 +550,6 @@
       ]
     }
   ],
-  "notice": "当前展示活动台风。请以当地气象台和政府发布的信息为准。"
+  "notice": "当前展示活动台风。请以当地气象台和政府发布的信息为准。",
+  "dataChangedAt": "2026-10-18T11:23:56.416Z"
 }
