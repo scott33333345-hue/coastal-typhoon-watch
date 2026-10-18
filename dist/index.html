@@ -1,159 +1,85 @@
 <!doctype html>
 <html lang="zh-CN">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="沿海台风实况与预警平台演示页面">
-  <title>海风哨｜台风实况与预警</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="海风哨将权威台风实况转化为与关注城市相关的距离、趋势和行动提示。">
+  <title>海风哨｜台风影响决策助手</title>
+  <link rel="preconnect" href="https://unpkg.com">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
   <link rel="stylesheet" href="styles.css">
-  <link rel="stylesheet" href="live.css">
 </head>
 <body>
-  <div class="demo-banner" role="status" id="dataBanner">
-    <strong>权威来源</strong>
-    <span>台风实况与路径来自浙江省水利厅公开系统；本站仅作信息展示，请以当地气象台和政府通知为准。</span>
+  <a class="skip-link" href="#main">跳到主要内容</a>
+  <div class="data-strip" id="dataStrip" role="status" aria-live="polite">
+    <span class="status-dot" aria-hidden="true"></span><span id="dataHealth">正在核验数据状态</span>
+    <button class="text-button" id="sourceJump" type="button">查看来源</button>
   </div>
-
   <header class="site-header">
-    <a class="brand" href="#top" aria-label="海风哨首页">
-      <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
-      <span><b>海风哨</b><small>COASTAL TYPHOON WATCH</small></span>
-    </a>
-    <nav aria-label="主导航">
-      <a class="active" href="#overview">实况</a>
-      <a href="#track">路径</a>
-      <a href="#warnings">预警</a>
-    </nav>
-    <button class="location-button" id="locationButton" type="button" aria-label="切换关注地区">
-      <span aria-hidden="true">⌖</span><span id="locationText">福建 · 厦门</span><b>⌄</b>
-    </button>
+    <a class="brand" href="index.html" aria-label="海风哨首页"><span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span><span><b>海风哨</b><small>COASTAL TYPHOON WATCH</small></span></a>
+    <nav aria-label="主导航"><a href="#impact">本地影响</a><a href="#track">台风路径</a><a href="#official-warning">官方预警</a><a href="#sources">数据来源</a></nav>
+    <button class="location-chip" id="locationButton" type="button" aria-haspopup="dialog">⌖ 福建·厦门 <span>切换</span></button>
   </header>
-
-  <main id="top">
-    <section class="hero" id="overview">
-      <div class="hero-copy">
-        <div class="status-line"><span class="live-dot"></span> <span id="stormStatus">正在载入台风实况</span> <i></i> <span id="dataTime">数据时间 —</span></div>
-        <p class="storm-code" id="stormCode">TY —</p>
-        <h1 id="stormName">载入中<span>LOADING</span></h1>
-        <p class="summary" id="stormSummary">正在从定时抓取的数据中读取最新台风信息。</p>
-        <div class="hero-actions">
-          <a class="primary-button" href="#track">查看完整路径 <span>↘</span></a>
-          <span class="impact-time"><small>自动更新时间</small><b id="fetchTime">每 15 分钟抓取一次</b></span>
+  <main id="main">
+    <section class="decision-hero" id="impact">
+      <div class="hero-heading"><p class="eyebrow">LOCAL IMPACT · 本站坐标计算</p><span class="freshness" id="freshnessBadge">载入中</span></div>
+      <div class="decision-grid">
+        <div class="decision-copy">
+          <p class="location-label">当前关注 <button id="inlineLocation" type="button">福建·厦门</button></p>
+          <h1 id="impactTitle">正在判断台风与厦门的空间关系</h1>
+          <p class="impact-summary" id="impactSummary">正在读取最新实况和预测路径，请稍候。</p>
+          <div class="decision-actions"><a class="primary-button" href="#track">查看路径 <span>↓</span></a><button class="secondary-button" id="followButton" type="button" disabled>载入关注状态</button></div>
+          <p class="calculation-note">距离和趋势是本站根据公开坐标计算的辅助信息，不是官方预警。</p>
         </div>
+        <aside class="action-card" aria-labelledby="actionTitle"><span class="card-kicker">现在应该做什么</span><h2 id="actionTitle">先核对本地官方信息</h2><ol id="actionList"><li>等待数据载入完成</li></ol><a href="#official-warning">查看官方预警状态 <span>→</span></a></aside>
       </div>
-
-      <aside class="warning-hero" aria-label="当前最高预警">
-        <div class="warning-shine"></div>
-        <div class="warning-top"><span>来源系统预警状态</span><small id="freshnessBadge">载入中</small></div>
-        <div class="warning-level"><span class="warning-icon" aria-hidden="true">!</span><div><b id="heroWarning">正在读取</b><small id="heroWarningLevel">—</small></div></div>
-        <p><a class="inline-source" href="https://typhoon.slt.zj.gov.cn/" target="_blank" rel="noopener">浙江省水利厅台风路径系统 ↗</a><br><span id="sourceUpdate">抓取时间 —</span></p>
-        <a href="#warnings">查看预警详情与防御指南 <span>→</span></a>
-      </aside>
-    </section>
-
-    <section class="metric-grid" aria-label="台风核心实况">
-      <article>
-        <div class="metric-head"><span class="metric-icon wind">≈</span><span>中心附近最大风力</span><em>实况</em></div>
-        <div class="metric-value"><b id="windLevel">—</b><span>级</span></div>
-        <p id="windSpeed">— 米/秒 · —</p>
-        <div class="scale"><i></i><i></i><i></i><i class="current"></i><i></i></div>
-      </article>
-      <article>
-        <div class="metric-head"><span class="metric-icon pressure">◉</span><span>中心最低气压</span><em>实况</em></div>
-        <div class="metric-value"><b id="pressure">—</b><span>百帕</span></div>
-        <p id="pressureTrend">来源系统最新观测</p>
-        <div class="trend"><svg viewBox="0 0 180 24" aria-hidden="true"><path d="M2 4 C35 3, 43 8, 68 9 S104 11, 122 15 S153 16,178 22"/></svg><span>强度增强</span></div>
-      </article>
-      <article>
-        <div class="metric-head"><span class="metric-icon direction">➤</span><span>移动方向与速度</span><em>实况</em></div>
-        <div class="metric-value"><b id="moveDirection">—</b><span class="speed" id="moveSpeed">— 公里/时</span></div>
-        <p>移动方向与速度以最新观测为准</p>
-        <div class="compass"><i>NW</i><span>➤</span><small>SE</small></div>
-      </article>
-      <article>
-        <div class="metric-head"><span class="metric-icon distance">⌖</span><span>中心位置</span><em>实况</em></div>
-        <div class="metric-value"><b id="latitude">—</b><span>°N</span></div>
-        <p id="longitude">— °E</p>
-        <div class="distance-line"><i></i><span>厦门</span></div>
-      </article>
-    </section>
-
-    <section class="track-section" id="track">
-      <div class="section-heading">
-        <div><span class="eyebrow">TRACK & FORECAST · 浙江省水利厅数据</span><h2>台风路径</h2></div>
-        <div class="time-tabs" role="group" aria-label="预报时效">
-          <button class="active" data-hours="72">未来 72 小时</button>
-          <button data-hours="48">48 小时</button>
-          <button data-hours="24">24 小时</button>
-        </div>
-      </div>
-
-      <div class="map-card">
-        <div class="map-note"><span>i</span><p><b id="mapStatus">正在载入真实路径数据</b><small>预报路径存在不确定性，请勿用于导航</small></p></div>
-        <svg class="track-map" viewBox="0 0 1000 520" role="img" aria-labelledby="mapTitle mapDesc">
-          <title id="mapTitle">台风海燕演示路径图</title>
-          <desc id="mapDesc">虚构台风从东南海面向西北方向接近厦门的路径示意</desc>
-          <defs>
-            <pattern id="grid" width="50" height="50" patternUnits="userSpaceOnUse"><path d="M 50 0 L 0 0 0 50" fill="none" stroke="#dbe6e8" stroke-width="1"/></pattern>
-            <filter id="glow"><feGaussianBlur stdDeviation="7" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
-            <linearGradient id="cone" x1="0" x2="1"><stop offset="0" stop-color="#ffb800" stop-opacity=".04"/><stop offset="1" stop-color="#ffb800" stop-opacity=".2"/></linearGradient>
-          </defs>
-          <rect width="1000" height="520" fill="#eef5f4"/><rect width="1000" height="520" fill="url(#grid)"/>
-          <g class="land"><path d="M0 0H328L302 48 321 91 286 128 297 172 254 208 265 250 223 286 234 327 191 361 202 402 155 437 168 478 132 520H0Z"/><path d="M836 0h164v122l-38-3-23-32-42-14-19-42z"/></g>
-          <g class="islands"><path d="M314 180l14-4 11 12-8 16-16-5z"/><path d="M254 382l9-3 7 9-5 11-11-4z"/><path d="M573 369l16-8 17 10-2 20-18 8-17-12z"/></g>
-          <g class="coast-labels"><text x="92" y="158">福 建</text><text x="152" y="304">广 东</text><text x="852" y="66">台 湾</text><text x="315" y="171">厦门</text><text x="246" y="371">汕头</text><text x="584" y="360">东沙群岛</text><text class="sea" x="602" y="178">南 海</text></g>
-          <g id="dynamicTrack"></g>
-          <g class="map-scale"><path d="M30 475h100"/><path d="M30 469v12M130 469v12"/><text x="58" y="500">100 km</text></g>
-        </svg>
-        <div class="map-legend"><span><i class="observed"></i>历史路径</span><span><i class="forecasted"></i>预报路径</span><span><i class="uncertainty"></i>不确定性范围</span><small>底图仅作示意，不用于导航</small></div>
+      <div class="impact-facts" aria-label="本地影响辅助计算">
+        <article><span>当前距离</span><strong id="distanceValue">—</strong><small>距厦门城市参考点</small></article>
+        <article><span>相对方位</span><strong id="bearingValue">—</strong><small>台风中心相对厦门</small></article>
+        <article><span>距离趋势</span><strong id="trendValue">—</strong><small id="trendWindow">等待有效实况</small></article>
+        <article><span>预测最近点</span><strong id="closestValue">—</strong><small id="closestTime">等待预测数据</small></article>
       </div>
     </section>
-
-    <section class="warnings-section" id="warnings">
-      <div class="section-heading">
-        <div><span class="eyebrow">OFFICIAL WARNING DEMO</span><h2>预警与防御</h2></div>
-        <span class="source-stamp">仅转述来源系统状态 · 请核对当地官方预警</span>
+    <section class="storm-overview" aria-labelledby="overviewTitle">
+      <div class="section-intro"><div><p class="eyebrow">CURRENT STORM · 权威来源实况</p><h2 id="overviewTitle">当前台风概况</h2></div><a id="detailLink" class="arrow-link" href="typhoon.html">查看完整详情 →</a></div>
+      <div class="storm-identity"><div><span id="stormCode">TY —</span><h3 id="stormName">正在载入</h3><p id="stormEnglish">—</p></div><p id="stormNarrative">正在读取来源数据。</p></div>
+      <div class="metric-grid">
+        <article><span>台风中心强度</span><strong id="strength">—</strong><small>不代表厦门本地预警</small></article>
+        <article><span>中心最大风力</span><strong><b id="windLevel">—</b> 级</strong><small id="windSpeed">—</small></article>
+        <article><span>中心最低气压</span><strong><b id="pressure">—</b> hPa</strong><small>来源最新实况</small></article>
+        <article><span>移动方向与速度</span><strong id="movement">—</strong><small id="observedAt">实况时间 —</small></article>
       </div>
+    </section>
+    <section class="track-section" id="track" aria-labelledby="trackTitle">
+      <div class="section-intro track-heading"><div><p class="eyebrow">TRACK & FORECAST</p><h2 id="trackTitle">台风路径与时间线</h2></div><div class="time-tabs" role="group" aria-label="预测时效"><button type="button" data-hours="24">24小时</button><button type="button" data-hours="48">48小时</button><button class="active" type="button" data-hours="72">72小时</button></div></div>
+      <p class="section-lead" id="trackSummary">正在载入路径。预测路径会随新资料调整，不用于导航。</p>
+      <div class="map-shell"><div id="map" class="map" role="application" aria-label="台风实况与预测路径地图"></div><div class="map-fallback" id="mapFallback" hidden>地图底图暂时不可用，请使用下方文字时间线。</div><div class="map-legend" aria-label="地图图例"><span><i class="observed-line"></i>实况路径</span><span><i class="forecast-line"></i>预测路径</span><span><i class="city-point"></i>关注城市</span></div></div>
+      <details class="timeline-panel" open><summary>查看文字路径</summary><ol id="timeline" class="timeline"><li>正在载入路径节点</li></ol></details>
+    </section>
+    <section class="warning-section" id="official-warning" aria-labelledby="warningTitle">
+      <div class="section-intro light"><div><p class="eyebrow">LOCAL OFFICIAL WARNING</p><h2 id="warningTitle">厦门官方预警</h2></div><span class="capability-badge">尚未接入</span></div>
       <div class="warning-layout">
-        <article class="warning-card" id="warningCard">
-          <div class="warning-card-head"><span class="alert-symbol">!</span><div><small>来源系统状态</small><h3 id="warningTitle">载入中</h3><p id="warningSeverity">—</p></div><time id="warningTime">—</time></div>
-          <p class="warning-copy" id="warningCopy">正在读取浙江省水利厅台风路径系统状态。本站不会根据风力自行发布官方预警。</p>
-          <div class="issuer"><span>数据来源</span><b>浙江省水利厅台风路径系统</b><span>适用地区</span><b>请以预警原文为准</b></div>
-          <button type="button" id="warningDetail">查看安全说明 <span>→</span></button>
-        </article>
-        <div class="action-panel">
-          <div class="action-title"><span>现在建议做什么</span><small>通用演示建议，请以当地官方指引为准</small></div>
-          <ol>
-            <li><span>01</span><div><b>减少外出</b><p>避开海边、山区、临时搭建物和高空坠物风险区。</p></div></li>
-            <li><span>02</span><div><b>加固门窗</b><p>收回阳台花盆等物品，检查门窗与室外设施。</p></div></li>
-            <li><span>03</span><div><b>准备应急物资</b><p>备好饮水、食物、药品、手电筒和充电设备。</p></div></li>
-          </ol>
-        </div>
+        <article class="official-state"><span>数据能力状态</span><h3>暂未接入厦门官方预警数据</h3><p>当前路径来源中的关注标记不能替代厦门市气象台发布的属地预警。请前往当地官方渠道核验。</p><a href="https://www.xm.gov.cn/" target="_blank" rel="noopener">前往厦门市政府网站核验 <span>↗</span></a></article>
+        <article class="general-advice"><span>一般性防灾提示 · 非官方指令</span><ul><li>持续关注当地气象部门和政府发布的信息。</li><li>台风活动期间谨慎前往开放海域和危险岸线。</li><li>如收到属地官方预警，以官方防御指南为准。</li></ul></article>
       </div>
-      <div class="warning-scale" aria-label="四色预警等级说明">
-        <div class="blue"><span>Ⅳ</span><b>蓝色</b><small>一般</small></div>
-        <div class="yellow active"><span>Ⅲ</span><b>黄色</b><small>较重 · 当前演示</small></div>
-        <div class="orange"><span>Ⅱ</span><b>橙色</b><small>严重</small></div>
-        <div class="red"><span>Ⅰ</span><b>红色</b><small>特别严重</small></div>
+    </section>
+    <section class="follow-section" id="follow" aria-labelledby="followTitle">
+      <div><p class="eyebrow">FOLLOW & REMINDERS</p><h2 id="followTitle">关注台风变化</h2><p>关注信息保存在当前浏览器。下次打开网页时，海风哨会比较台风强度、位置和预测变化；当前版本不会在网页关闭后发送系统推送。</p></div>
+      <form id="reminderForm" class="reminder-form"><label><input type="checkbox" name="strength"> 强度发生变化</label><label><input type="checkbox" name="distance"> 与厦门距离明显变化</label><label><input type="checkbox" name="forecast"> 预测路径更新</label><label><input type="checkbox" name="warning" disabled> 厦门官方预警变化 <small>待接入</small></label><button type="submit" class="primary-button">保存提醒偏好</button><p id="reminderStatus" role="status" aria-live="polite"></p></form>
+    </section>
+    <section class="source-section" id="sources" aria-labelledby="sourceTitle">
+      <div><p class="eyebrow">SOURCE & METHOD</p><h2 id="sourceTitle">来源与计算方法</h2></div>
+      <div class="source-grid">
+        <article><span>台风实况与路径</span><strong>浙江省水利厅台风路径实时发布系统</strong><a id="sourceLink" href="https://typhoon.slt.zj.gov.cn/" target="_blank" rel="noopener">打开来源 ↗</a></article>
+        <article><span>预测机构</span><strong id="agencyName">—</strong><p>预测点按来源机构原始数据展示。</p></article>
+        <article><span>本站计算</span><strong>距离、方位与趋势</strong><p>基于公开坐标和厦门城市参考点计算，不是官方影响判断。</p></article>
+        <article><span>更新状态</span><strong id="sourceTimes">—</strong><p>计划约每15分钟检查，实际时间以本页显示为准。</p></article>
       </div>
     </section>
   </main>
-
-  <footer>
-    <div class="brand compact"><span class="brand-mark"><i></i><i></i><i></i></span><span><b>海风哨</b><small>让每一次预警，都清楚抵达。</small></span></div>
-    <p><strong>重要提示：</strong>本站自动转述浙江省水利厅公开台风数据，不自行发布预报或预警。<br>数据可能延迟或中断；实际灾害期间请以当地气象台、应急管理部门和政府通知为准。</p>
-    <span>DEMO · 2026</span>
-  </footer>
-
-  <dialog id="warningDialog">
-    <button class="dialog-close" type="button" aria-label="关闭">×</button>
-    <span class="dialog-tag">安全说明 · 本站不发布预警</span>
-    <h2>如何确认官方预警</h2>
-    <p>本站展示的预警状态来自上游公开数据，但不能替代属地气象台和政府发布的正式预警。</p>
-    <h3>真实情况下请这样确认</h3>
-    <ul><li>查看当地气象台或政府官方渠道。</li><li>核对发布机构、时间、适用地区及预警状态。</li><li>遵守当地应急部门的停课、停航或转移通知。</li></ul>
-  </dialog>
+  <footer><div class="brand footer-brand"><span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span><span><b>海风哨</b><small>COASTAL TYPHOON WATCH</small></span></div><p>本站转述公开数据并提供辅助计算，不发布官方气象预报或预警。灾害期间请以当地气象台、应急管理部门和政府通知为准。</p></footer>
+  <dialog id="locationDialog" aria-labelledby="locationDialogTitle"><button class="dialog-close" type="button" aria-label="关闭">×</button><p class="eyebrow">LOCATION</p><h2 id="locationDialogTitle">选择关注城市</h2><button class="city-option selected" type="button" data-city="xiamen"><strong>福建·厦门</strong><span>首版验证城市</span></button><p>当前仅厦门完成城市参考点计算。浏览器精确定位将在后续版本开放，首次访问不会自动申请定位权限。</p></dialog>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
   <script src="app.js"></script>
 </body>
 </html>
-
