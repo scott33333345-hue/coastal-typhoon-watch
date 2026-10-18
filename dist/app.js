@@ -7,6 +7,8 @@ let storm;
 let selectedHours = 72;
 let map;
 let pathLayer;
+let currentImpact;
+let currentHealth;
 
 function safe(value, fallback = '来源暂未提供') { return value === null || value === undefined || value === '' ? fallback : value; }
 function parseTime(value) { return value ? new Date(value.replace(' ', 'T') + (value.includes('T') ? '' : '+08:00')) : null; }
@@ -157,14 +159,41 @@ function renderFollow(impact) {
   snapshots[storm.id] = { strength: storm.latest?.strength, distance: impact?.currentDistance, forecastEnd: storm.forecast?.at(-1)?.time, viewedAt: new Date().toISOString() }; writeJson(STORAGE.snapshots, snapshots);
 }
 
+function sharePayload() {
+  const detailUrl = new URL(`typhoon.html?id=${encodeURIComponent(storm.id)}&city=xiamen`, location.href).href;
+  if (!currentImpact || currentHealth?.state === 'failed') return { title: `${storm.name}｜海风哨`, text: `当前数据不足，请通过官方渠道核验。来源实况：${formatTime(storm.latest?.time)}。`, url: detailUrl };
+  const state = currentHealth?.state === 'delayed' ? '页面数据可能延迟。' : '';
+  return {
+    title: `台风${storm.name}｜海风哨`,
+    text: `${state}台风${storm.name}，来源实况时间${formatTime(storm.latest?.time)}。台风中心位于厦门${currentImpact.bearing}方向，距厦门城市参考点约${Math.round(currentImpact.currentDistance)}公里。距离和方位为本站根据公开坐标计算，不是官方预警。`,
+    url: detailUrl
+  };
+}
+
+async function copyText(value) {
+  if (navigator.clipboard?.writeText) return navigator.clipboard.writeText(value);
+  const area = document.createElement('textarea'); area.value = value; area.setAttribute('readonly', ''); area.style.position = 'fixed'; area.style.opacity = '0'; document.body.append(area); area.select();
+  const copied = document.execCommand('copy'); area.remove(); if (!copied) throw new Error('copy failed');
+}
+
+async function shareCurrent() {
+  const content = sharePayload();
+  try {
+    if (navigator.share) { await navigator.share(content); $('#shareStatus').textContent = '已打开系统分享面板。'; return; }
+    await copyText(`${content.text}\n${content.url}`); $('#shareStatus').textContent = '当前摘要和详情链接已复制。';
+  } catch (error) { if (error?.name !== 'AbortError') $('#shareStatus').textContent = '分享未完成，请使用“复制详情链接”。'; }
+}
+
 function render() {
-  const health = freshness(); $('#dataStrip').className = `data-strip ${health.state}`; $('#dataHealth').textContent = health.label; $('#freshnessBadge').textContent = payload.mode === 'live' ? '活动台风实况' : '历史数据';
-  renderOverview(); const impact = calculateImpact(); renderImpact(impact); renderMap(); renderFollow(impact);
+  const health = freshness(); currentHealth = health; $('#dataStrip').className = `data-strip ${health.state}`; $('#dataHealth').textContent = health.label; $('#freshnessBadge').textContent = payload.mode === 'live' ? '活动台风实况' : '历史数据';
+  renderOverview(); const impact = calculateImpact(); currentImpact = impact; renderImpact(impact); renderMap(); renderFollow(impact);
 }
 
 document.querySelectorAll('.time-tabs button').forEach((button) => button.addEventListener('click', () => { document.querySelectorAll('.time-tabs button').forEach((item) => item.classList.remove('active')); button.classList.add('active'); selectedHours = Number(button.dataset.hours); renderMap(); }));
 const dialog = $('#locationDialog'); [$('#locationButton'), $('#inlineLocation')].forEach((button) => button.addEventListener('click', () => dialog.showModal())); $('.dialog-close').addEventListener('click', () => dialog.close()); $('.city-option').addEventListener('click', () => { writeJson(STORAGE.city, 'xiamen'); dialog.close(); });
 $('#sourceJump').addEventListener('click', () => $('#sources').scrollIntoView({ behavior: 'smooth' }));
+$('#shareSummary').addEventListener('click', shareCurrent);
+$('#copyLink').addEventListener('click', async () => { try { await copyText(sharePayload().url); $('#shareStatus').textContent = '详情链接已复制，不包含精确位置。'; } catch { $('#shareStatus').textContent = '复制失败，请从浏览器地址栏复制链接。'; } });
 
 fetch(DATA_URL, { cache: 'no-store' }).then((response) => { if (!response.ok) throw new Error(`HTTP ${response.status}`); return response.json(); }).then((data) => {
   if (!Array.isArray(data.storms) || !data.storms.length) throw new Error('当前数据中没有可展示的台风');

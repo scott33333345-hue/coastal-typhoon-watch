@@ -8,6 +8,7 @@
   <link rel="preconnect" href="https://unpkg.com">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
   <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="share.css">
 </head>
 <body>
   <a class="skip-link" href="#main">跳到主要内容</a>
@@ -66,6 +67,16 @@
     <section class="follow-section" id="follow" aria-labelledby="followTitle">
       <div><p class="eyebrow">FOLLOW & REMINDERS</p><h2 id="followTitle">关注台风变化</h2><p>关注信息保存在当前浏览器。下次打开网页时，海风哨会比较台风强度、位置和预测变化；当前版本不会在网页关闭后发送系统推送。</p></div>
       <form id="reminderForm" class="reminder-form"><label><input type="checkbox" name="strength"> 强度发生变化</label><label><input type="checkbox" name="distance"> 与厦门距离明显变化</label><label><input type="checkbox" name="forecast"> 预测路径更新</label><label><input type="checkbox" name="warning" disabled> 厦门官方预警变化 <small>待接入</small></label><button type="submit" class="primary-button">保存提醒偏好</button><p id="reminderStatus" role="status" aria-live="polite"></p></form>
+    </section>
+    <section class="share-section" id="share" aria-labelledby="shareTitle">
+      <div><p class="eyebrow">SAFE SHARING</p><h2 id="shareTitle">把可核验的信息分享给家人</h2><p>分享摘要会保留来源实况时间、城市参考点和本站计算标识，不包含精确位置、关注状态或提醒偏好。</p></div>
+      <div class="share-actions"><button class="primary-button" id="shareSummary" type="button">分享当前摘要</button><button class="secondary-button" id="copyLink" type="button">复制详情链接</button><p id="shareStatus" role="status" aria-live="polite"></p></div>
+    </section>
+    <section class="emergency-section" id="emergency" aria-labelledby="emergencyTitle">
+      <div class="section-intro light"><div><p class="eyebrow">OFFICIAL & EMERGENCY</p><h2 id="emergencyTitle">官方核验与应急出口</h2></div><span class="capability-badge">中国大陆</span></div>
+      <div class="official-links"><a href="https://www.xm.gov.cn/" target="_blank" rel="noopener"><span>属地官方信息</span><strong>厦门市政府</strong><em>打开 ↗</em></a><a href="https://typhoon.slt.zj.gov.cn/" target="_blank" rel="noopener"><span>台风路径来源</span><strong>浙江省水利厅</strong><em>打开 ↗</em></a><a href="https://www.cneb.gov.cn/yjzn/" target="_blank" rel="noopener"><span>应急指南</span><strong>国家应急广播</strong><em>打开 ↗</em></a></div>
+      <p class="emergency-note">遇到现实危险时，请直接联系对应救援机构，并清楚说明所在位置、现场情况和人员状态。本站不会自动拨号。</p>
+      <div class="phone-grid" aria-label="常用紧急求助电话"><a href="tel:110"><span>报警求助</span><strong>110</strong></a><a href="tel:119"><span>消防救援</span><strong>119</strong></a><a href="tel:120"><span>医疗急救</span><strong>120</strong></a><a href="tel:122"><span>交通事故报警</span><strong>122</strong></a><a href="tel:12395"><span>水上遇险求救</span><strong>12395</strong></a><a class="non-emergency" href="tel:12345"><span>非紧急政务咨询</span><strong>12345</strong></a></div>
     </section>
     <section class="source-section" id="sources" aria-labelledby="sourceTitle">
       <div><p class="eyebrow">SOURCE & METHOD</p><h2 id="sourceTitle">来源与计算方法</h2></div>
