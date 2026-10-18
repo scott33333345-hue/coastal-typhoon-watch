@@ -9,6 +9,8 @@ let map;
 let pathLayer;
 let currentImpact;
 let currentHealth;
+let mapFallbackTracked = false;
+const track = (name, properties = {}) => window.coastalAnalytics?.track(name, properties);
 
 function safe(value, fallback = '来源暂未提供') { return value === null || value === undefined || value === '' ? fallback : value; }
 function parseTime(value) { return value ? new Date(value.replace(' ', 'T') + (value.includes('T') ? '' : '+08:00')) : null; }
@@ -44,6 +46,14 @@ function freshness() {
   return { state: 'healthy', label: `数据已读取 · 抓取于 ${formatTime(fetched)}` };
 }
 
+function ageBucket() {
+  const ageHours = (Date.now() - new Date(payload.fetchedAt).getTime()) / 3600000;
+  if (!Number.isFinite(ageHours)) return 'unknown';
+  if (ageHours <= 3) return '0-3h';
+  if (ageHours <= 24) return '3-24h';
+  return '24h+';
+}
+
 function calculateImpact() {
   const latest = pointOf(storm?.latest);
   if (!latest) return null;
@@ -68,6 +78,7 @@ function renderImpact(impact) {
   if (!impact) {
     $('#impactTitle').textContent = '当前数据不足，暂无法判断与厦门的关系';
     $('#impactSummary').textContent = '来源未提供有效台风中心坐标，请直接核对官方渠道。';
+    track('local_impact_rendered', { city_id: 'xiamen', result: 'unavailable' });
     return;
   }
   const closestText = impact.closest ? `；当前预测离散点中，最近约 ${Math.round(impact.closest.distance)} 公里` : '；来源暂未提供可用预测点';
@@ -85,6 +96,7 @@ function renderImpact(impact) {
     impact.trend === '正在接近' ? '台风正在接近城市参考点，留意后续预测调整' : '当前空间距离仍较远，不等同于本地安全结论',
     '台风活动期间谨慎前往开放海域和危险岸线'
   ].map((text) => { const li = document.createElement('li'); li.textContent = text; return li; }));
+  track('local_impact_rendered', { city_id: 'xiamen', storm_id: storm.id, result: 'available' });
 }
 
 function renderOverview() {
@@ -111,7 +123,7 @@ function renderMap() {
   const latestDate = parseTime(storm.latest?.time);
   const forecasts = (storm.forecast || []).filter((item) => pointOf(item) && (!latestDate || parseTime(item.time) - latestDate <= selectedHours * 3600000));
   renderTimeline(observed, forecasts);
-  if (!window.L) { $('#map').hidden = true; $('#mapFallback').hidden = false; return; }
+  if (!window.L) { $('#map').hidden = true; $('#mapFallback').hidden = false; if (!mapFallbackTracked) { track('map_fallback_displayed', { reason: 'library_unavailable' }); mapFallbackTracked = true; } return; }
   try {
     if (!map) {
       map = L.map('map', { scrollWheelZoom: false });
@@ -130,7 +142,7 @@ function renderMap() {
     if (storm.latest) L.marker([storm.latest.latitude, storm.latest.longitude], { icon: markerIcon('storm-marker', 20) }).bindPopup(`<b>${storm.name}当前位置</b><br>${formatTime(storm.latest.time)}`).addTo(pathLayer);
     if (bounds.length) map.fitBounds(bounds, { padding: [35, 35], maxZoom: 6 });
     setTimeout(() => map.invalidateSize(), 0);
-  } catch { $('#map').hidden = true; $('#mapFallback').hidden = false; }
+  } catch { $('#map').hidden = true; $('#mapFallback').hidden = false; if (!mapFallbackTracked) { track('map_fallback_displayed', { reason: 'render_error' }); mapFallbackTracked = true; } }
 }
 
 function renderTimeline(observed, forecasts) {
@@ -149,10 +161,10 @@ function renderFollow(impact) {
   const button = $('#followButton'); button.disabled = false;
   const syncButton = () => { const active = followed.has(storm.id); button.textContent = active ? '已关注此台风 ✓' : '关注此台风'; button.classList.toggle('following', active); button.setAttribute('aria-pressed', String(active)); };
   syncButton();
-  button.onclick = () => { followed.has(storm.id) ? followed.delete(storm.id) : followed.add(storm.id); writeJson(STORAGE.followed, [...followed]); syncButton(); $('#reminderStatus').textContent = followed.has(storm.id) ? '已保存在当前浏览器，下次打开时将检查变化。' : '已取消关注。'; };
+  button.onclick = () => { followed.has(storm.id) ? followed.delete(storm.id) : followed.add(storm.id); writeJson(STORAGE.followed, [...followed]); syncButton(); const active = followed.has(storm.id); $('#reminderStatus').textContent = active ? '已保存在当前浏览器，下次打开时将检查变化。' : '已取消关注。'; track('follow_changed', { storm_id: storm.id, followed: active }); };
   const saved = readJson(STORAGE.reminders, {});
   $('#reminderForm').elements.strength.checked = Boolean(saved.strength); $('#reminderForm').elements.distance.checked = Boolean(saved.distance); $('#reminderForm').elements.forecast.checked = Boolean(saved.forecast);
-  $('#reminderForm').onsubmit = (event) => { event.preventDefault(); const form = new FormData(event.currentTarget); writeJson(STORAGE.reminders, { strength: form.has('strength'), distance: form.has('distance'), forecast: form.has('forecast') }); $('#reminderStatus').textContent = '提醒偏好已保存在当前浏览器。网页关闭后不会发送系统推送。'; };
+  $('#reminderForm').onsubmit = (event) => { event.preventDefault(); const form = new FormData(event.currentTarget); const values = { strength: form.has('strength'), distance: form.has('distance'), forecast: form.has('forecast') }; writeJson(STORAGE.reminders, values); $('#reminderStatus').textContent = '提醒偏好已保存在当前浏览器。网页关闭后不会发送系统推送。'; track('reminder_preferences_saved', { storm_id: storm.id, enabled_count: Object.values(values).filter(Boolean).length }); };
   const snapshots = readJson(STORAGE.snapshots, {}); const previous = snapshots[storm.id]; const changes = [];
   if (previous && followed.has(storm.id)) { if (previous.strength !== storm.latest?.strength && saved.strength) changes.push(`强度由${previous.strength || '未知'}变为${storm.latest?.strength || '未知'}`); if (impact && saved.distance && Math.abs(previous.distance - impact.currentDistance) >= 50) changes.push(`与厦门距离变化约${Math.round(Math.abs(previous.distance - impact.currentDistance))}公里`); if (previous.forecastEnd !== storm.forecast?.at(-1)?.time && saved.forecast) changes.push('预测路径已更新'); }
   if (changes.length) $('#reminderStatus').textContent = `自上次查看后：${changes.join('；')}。`;
@@ -178,10 +190,11 @@ async function copyText(value) {
 
 async function shareCurrent() {
   const content = sharePayload();
+  track('share_started', { storm_id: storm.id, share_method: navigator.share ? 'system' : 'copy' });
   try {
-    if (navigator.share) { await navigator.share(content); $('#shareStatus').textContent = '已打开系统分享面板。'; return; }
-    await copyText(`${content.text}\n${content.url}`); $('#shareStatus').textContent = '当前摘要和详情链接已复制。';
-  } catch (error) { if (error?.name !== 'AbortError') $('#shareStatus').textContent = '分享未完成，请使用“复制详情链接”。'; }
+    if (navigator.share) { await navigator.share(content); $('#shareStatus').textContent = '已打开系统分享面板。'; track('share_completed', { storm_id: storm.id, share_method: 'system' }); return; }
+    await copyText(`${content.text}\n${content.url}`); $('#shareStatus').textContent = '当前摘要和详情链接已复制。'; track('share_completed', { storm_id: storm.id, share_method: 'copy' });
+  } catch (error) { if (error?.name === 'AbortError') { track('share_cancelled', { storm_id: storm.id, share_method: 'system' }); } else { $('#shareStatus').textContent = '分享未完成，请使用“复制详情链接”。'; track('share_failed', { storm_id: storm.id, share_method: navigator.share ? 'system' : 'copy', reason: 'client_error' }); } }
 }
 
 function render() {
@@ -189,17 +202,24 @@ function render() {
   renderOverview(); const impact = calculateImpact(); currentImpact = impact; renderImpact(impact); renderMap(); renderFollow(impact);
 }
 
-document.querySelectorAll('.time-tabs button').forEach((button) => button.addEventListener('click', () => { document.querySelectorAll('.time-tabs button').forEach((item) => item.classList.remove('active')); button.classList.add('active'); selectedHours = Number(button.dataset.hours); renderMap(); }));
+document.querySelectorAll('.time-tabs button').forEach((button) => button.addEventListener('click', () => { document.querySelectorAll('.time-tabs button').forEach((item) => item.classList.remove('active')); button.classList.add('active'); selectedHours = Number(button.dataset.hours); track('forecast_range_changed', { storm_id: storm?.id, forecast_hours: selectedHours }); renderMap(); }));
 const dialog = $('#locationDialog'); [$('#locationButton'), $('#inlineLocation')].forEach((button) => button.addEventListener('click', () => dialog.showModal())); $('.dialog-close').addEventListener('click', () => dialog.close()); $('.city-option').addEventListener('click', () => { writeJson(STORAGE.city, 'xiamen'); dialog.close(); });
-$('#sourceJump').addEventListener('click', () => $('#sources').scrollIntoView({ behavior: 'smooth' }));
+$('.city-option').addEventListener('click', () => track('city_selected', { city_id: 'xiamen' }));
+$('#sourceJump').addEventListener('click', () => { track('official_source_opened', { source: 'source_section' }); $('#sources').scrollIntoView({ behavior: 'smooth' }); });
 $('#shareSummary').addEventListener('click', shareCurrent);
-$('#copyLink').addEventListener('click', async () => { try { await copyText(sharePayload().url); $('#shareStatus').textContent = '详情链接已复制，不包含精确位置。'; } catch { $('#shareStatus').textContent = '复制失败，请从浏览器地址栏复制链接。'; } });
+$('#copyLink').addEventListener('click', async () => { track('share_started', { storm_id: storm.id, share_method: 'link_copy' }); try { await copyText(sharePayload().url); $('#shareStatus').textContent = '详情链接已复制，不包含精确位置。'; track('share_completed', { storm_id: storm.id, share_method: 'link_copy' }); } catch { $('#shareStatus').textContent = '复制失败，请从浏览器地址栏复制链接。'; track('share_failed', { storm_id: storm.id, share_method: 'link_copy', reason: 'client_error' }); } });
+$('#detailLink').addEventListener('click', () => track('typhoon_detail_opened', { storm_id: storm?.id }));
+document.querySelector('.timeline-panel').addEventListener('toggle', (event) => track('timeline_toggled', { storm_id: storm?.id, result: event.currentTarget.open ? 'opened' : 'closed' }));
+document.querySelectorAll('.official-links a, .official-state a, #sourceLink').forEach((link) => link.addEventListener('click', () => track('official_source_opened', { source: link.hostname || 'official' })));
+const trackSection = $('#track');
+if ('IntersectionObserver' in window) { const observer = new IntersectionObserver((entries) => { if (entries.some((entry) => entry.isIntersecting)) { track('track_opened', { storm_id: storm?.id }); observer.disconnect(); } }, { threshold: 0.35 }); observer.observe(trackSection); }
 
 fetch(DATA_URL, { cache: 'no-store' }).then((response) => { if (!response.ok) throw new Error(`HTTP ${response.status}`); return response.json(); }).then((data) => {
   if (!Array.isArray(data.storms) || !data.storms.length) throw new Error('当前数据中没有可展示的台风');
-  payload = data; storm = data.storms.find((item) => item.active) || data.storms[0]; render();
+  payload = data; storm = data.storms.find((item) => item.active) || data.storms[0]; track('data_load_completed', { storm_id: storm.id, mode: data.mode || 'unknown', data_state: freshness().state, data_age_bucket: ageBucket(), using_cache: false }); render();
 }).catch((error) => {
+  track('data_load_failed', { reason: error instanceof TypeError ? 'network' : 'invalid_data' });
   $('#dataStrip').className = 'data-strip failed'; $('#dataHealth').textContent = '数据加载失败 · 请核对官方渠道'; $('#freshnessBadge').textContent = '当前状态未知';
   $('#impactTitle').textContent = '当前无法获取台风数据'; $('#impactSummary').textContent = '本站不会根据缺失数据判断风险，请直接查看官方来源。'; $('#actionList').innerHTML = '<li>重新加载页面</li><li>前往官方渠道核验</li>';
-  $('#map').hidden = true; $('#mapFallback').hidden = false; console.error(error);
+  $('#map').hidden = true; $('#mapFallback').hidden = false; track('fallback_displayed', { reason: 'data_load_failed' }); console.error(error);
 });
