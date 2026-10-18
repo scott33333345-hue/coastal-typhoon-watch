@@ -11,6 +11,9 @@ let currentImpact;
 let currentHealth;
 let mapFallbackTracked = false;
 let dialogOpener;
+let usingOfflineCache = false;
+let mapLibraryPromise;
+let mapLibraryFailed = false;
 const track = (name, properties = {}) => window.coastalAnalytics?.track(name, properties);
 
 function safe(value, fallback = '来源暂未提供') { return value === null || value === undefined || value === '' ? fallback : value; }
@@ -43,11 +46,28 @@ function showMapFallback(reason, hideMap = false) {
   $('#mapFallback').hidden = false;
   if (!mapFallbackTracked) { track('map_fallback_displayed', { reason }); mapFallbackTracked = true; }
 }
+function showMapLoading() {
+  $('#map').hidden = true;
+  $('#mapFallback').hidden = false;
+  $('#mapFallback').textContent = '地图组件正在后台加载，文字时间线已可使用。';
+}
+function ensureMapLibrary() {
+  if (window.L) return Promise.resolve();
+  if (mapLibraryPromise) return mapLibraryPromise;
+  mapLibraryPromise = new Promise((resolve, reject) => {
+    const stylesheet = document.createElement('link'); stylesheet.rel = 'stylesheet'; stylesheet.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css'; stylesheet.crossOrigin = '';
+    const script = document.createElement('script'); script.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js'; script.crossOrigin = ''; script.onload = resolve; script.onerror = () => reject(new Error('Leaflet load failed'));
+    document.head.append(stylesheet); document.body.append(script);
+    setTimeout(() => { if (!window.L) reject(new Error('Leaflet load timeout')); }, 8000);
+  });
+  return mapLibraryPromise;
+}
 
 function freshness() {
   const fetched = new Date(payload.fetchedAt);
   const ageMinutes = (Date.now() - fetched.getTime()) / 60000;
   if (!Number.isFinite(ageMinutes)) return { state: 'failed', label: '数据时间无法验证' };
+  if (usingOfflineCache || !navigator.onLine) return { state: 'delayed', label: `当前离线 · 显示缓存数据 · 抓取于 ${formatTime(fetched)}` };
   if (ageMinutes > 180) return { state: 'delayed', label: `页面数据较旧 · 抓取于 ${formatTime(fetched)}` };
   return { state: 'healthy', label: `数据已读取 · 抓取于 ${formatTime(fetched)}` };
 }
@@ -129,8 +149,9 @@ function renderMap() {
   const latestDate = parseTime(storm.latest?.time);
   const forecasts = (storm.forecast || []).filter((item) => pointOf(item) && (!latestDate || parseTime(item.time) - latestDate <= selectedHours * 3600000));
   renderTimeline(observed, forecasts);
-  if (!window.L) { showMapFallback('library_unavailable', true); return; }
+  if (!window.L) { mapLibraryFailed ? showMapFallback('library_unavailable', true) : showMapLoading(); return; }
   try {
+    $('#map').hidden = false; $('#mapFallback').hidden = true; $('#mapFallback').textContent = '地图底图暂时不可用，请使用下方文字时间线。';
     if (!map) {
       map = L.map('map', { scrollWheelZoom: false });
       const tiles = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 10, attribution: '&copy; OpenStreetMap contributors' });
@@ -220,6 +241,7 @@ async function shareCurrent() {
 function render() {
   const health = freshness(); currentHealth = health; $('#dataStrip').className = `data-strip ${health.state}`; $('#dataHealth').textContent = health.label; $('#freshnessBadge').textContent = payload.mode === 'live' ? '活动台风实况' : '历史数据';
   renderOverview(); const impact = calculateImpact(); currentImpact = impact; renderImpact(impact); renderMap(); renderFollow(impact);
+  ensureMapLibrary().then(() => renderMap()).catch(() => { mapLibraryFailed = true; showMapFallback('library_unavailable', true); });
 }
 
 document.querySelectorAll('.time-tabs button').forEach((button) => button.addEventListener('click', () => { document.querySelectorAll('.time-tabs button').forEach((item) => { item.classList.remove('active'); item.setAttribute('aria-pressed', 'false'); }); button.classList.add('active'); button.setAttribute('aria-pressed', 'true'); selectedHours = Number(button.dataset.hours); track('forecast_range_changed', { storm_id: storm?.id, forecast_hours: selectedHours }); renderMap(); }));
@@ -234,9 +256,12 @@ document.querySelectorAll('.official-links a, .official-state a, #sourceLink').f
 const trackSection = $('#track');
 if ('IntersectionObserver' in window) { const observer = new IntersectionObserver((entries) => { if (entries.some((entry) => entry.isIntersecting)) { track('track_opened', { storm_id: storm?.id }); observer.disconnect(); } }, { threshold: 0.35 }); observer.observe(trackSection); }
 
-fetch(DATA_URL, { cache: 'no-store' }).then((response) => { if (!response.ok) throw new Error(`HTTP ${response.status}`); return response.json(); }).then((data) => {
+addEventListener('online', () => { usingOfflineCache = false; if (payload) render(); });
+addEventListener('offline', () => { if (payload) render(); });
+
+fetch(DATA_URL, { cache: 'no-store' }).then((response) => { if (!response.ok) throw new Error(`HTTP ${response.status}`); usingOfflineCache = response.headers.get('X-Coastal-Offline') === 'true'; return response.json(); }).then((data) => {
   if (!Array.isArray(data.storms) || !data.storms.length) throw new Error('当前数据中没有可展示的台风');
-  payload = data; storm = data.storms.find((item) => item.active) || data.storms[0]; track('data_load_completed', { storm_id: storm.id, mode: data.mode || 'unknown', data_state: freshness().state, data_age_bucket: ageBucket(), using_cache: false }); render();
+  payload = data; storm = data.storms.find((item) => item.active) || data.storms[0]; track('data_load_completed', { storm_id: storm.id, mode: data.mode || 'unknown', data_state: freshness().state, data_age_bucket: ageBucket(), using_cache: usingOfflineCache }); render();
 }).catch((error) => {
   track('data_load_failed', { reason: error instanceof TypeError ? 'network' : 'invalid_data' });
   $('#dataStrip').className = 'data-strip failed'; $('#dataHealth').textContent = '数据加载失败 · 请核对官方渠道'; $('#freshnessBadge').textContent = '当前状态未知';

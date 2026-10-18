@@ -53,6 +53,5 @@ try {
     await call('Target.closeTarget', { targetId });
   }
 } finally {
-  socket.close();
-  browser.kill();
+  await call('Browser.close').catch(() => {}); socket.close(); browser.kill();
 }

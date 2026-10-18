@@ -58,6 +58,5 @@ try {
   const passed = structure.unnamed.length === 0 && structure.skipFocused && structure.dialogFocused && structure.focusReturned && structure.reducedMotion && structure.tabs.join(',') === 'false,false,true' && structure.mapDescription === 'mapDescription' && !structure.overflow && !zoom.overflow && storageFallback.includes('禁止本地保存') && mapFallback.shown && mapFallback.timeline;
   if (!passed) process.exitCode = 1;
 } finally {
-  socket.close();
-  browser.kill();
+  await call('Browser.close').catch(() => {}); socket.close(); browser.kill();
 }

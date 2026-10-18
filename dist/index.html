@@ -4,14 +4,26 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="description" content="海风哨将权威台风实况转化为与关注城市相关的距离、趋势和行动提示。">
+  <meta name="theme-color" content="#087f78">
+  <meta name="robots" content="index,follow,max-image-preview:large">
   <title>海风哨｜台风影响决策助手</title>
-  <link rel="preconnect" href="https://unpkg.com">
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
+  <link rel="canonical" href="https://scott33333345-hue.github.io/coastal-typhoon-watch/">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:site_name" content="海风哨">
+  <meta property="og:title" content="海风哨｜台风影响决策助手">
+  <meta property="og:description" content="将公开台风实况转化为与厦门相关的距离、趋势和行动提示，并保留官方核验出口。">
+  <meta property="og:url" content="https://scott33333345-hue.github.io/coastal-typhoon-watch/">
+  <meta name="twitter:card" content="summary">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="dns-prefetch" href="https://unpkg.com">
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="share.css">
   <link rel="stylesheet" href="analytics.css">
   <link rel="stylesheet" href="responsive.css">
   <link rel="stylesheet" href="accessibility.css">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"海风哨","url":"https://scott33333345-hue.github.io/coastal-typhoon-watch/","description":"将公开台风实况转化为与关注城市相关的距离、趋势和行动提示。","applicationCategory":"WeatherApplication","operatingSystem":"Any","inLanguage":"zh-CN","isAccessibleForFree":true}</script>
 </head>
 <body>
   <a class="skip-link" href="#main">跳到主要内容</a>
@@ -97,7 +109,7 @@
   <footer><div class="brand footer-brand"><span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span><span><b>海风哨</b><small>COASTAL TYPHOON WATCH</small></span></div><p>本站转述公开数据并提供辅助计算，不发布官方气象预报或预警。灾害期间请以当地气象台、应急管理部门和政府通知为准。</p></footer>
   <dialog id="locationDialog" aria-labelledby="locationDialogTitle" aria-describedby="locationDialogDescription"><button class="dialog-close" type="button" aria-label="关闭选择城市弹窗">×</button><p class="eyebrow">LOCATION</p><h2 id="locationDialogTitle">选择关注城市</h2><button class="city-option selected" type="button" data-city="xiamen" aria-pressed="true"><strong>福建·厦门</strong><span>首版验证城市</span></button><p id="locationDialogDescription">当前仅厦门完成城市参考点计算。浏览器精确定位将在后续版本开放，首次访问不会自动申请定位权限。</p></dialog>
   <script src="analytics.js"></script>
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
   <script src="app.js"></script>
+  <script src="pwa.js"></script>
 </body>
 </html>
