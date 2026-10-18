@@ -1,0 +1,89 @@
+.visually-hidden {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0 0 0 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+:where(a, button, input, summary, [tabindex]):focus-visible {
+  outline: 3px solid #f0a329;
+  outline-offset: 4px;
+  border-radius: 3px;
+  box-shadow: 0 0 0 6px #000;
+}
+
+.skip-map {
+  display: inline-block;
+  margin: 8px 0 2px;
+  color: var(--teal);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.noscript-warning {
+  padding: 22px clamp(18px, 5vw, 72px);
+  background: #fff0dc;
+  color: #5c3714;
+  border-bottom: 2px solid #9a5b18;
+}
+
+.noscript-warning strong { display: block; margin-bottom: 5px; }
+.noscript-warning a { color: inherit; font-weight: 800; }
+.storage-warning { color: #7a4313 !important; font-weight: 700; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+  }
+}
+
+@media (prefers-contrast: more) {
+  :root { --muted: #344b4c; --line: #78918e; }
+  .freshness,
+  .capability-badge,
+  .location-chip,
+  .primary-button,
+  .secondary-button,
+  .official-state,
+  .general-advice,
+  .metric-grid,
+  .impact-facts { border-width: 2px; }
+}
+
+@media (forced-colors: active) {
+  .status-dot,
+  .map-legend i,
+  .brand-mark i,
+  .storm-marker,
+  .city-marker { forced-color-adjust: none; }
+  .time-tabs button.active,
+  .secondary-button.following { outline: 2px solid CanvasText; }
+}
+
+@media print {
+  .site-header nav,
+  .location-chip,
+  .decision-actions,
+  .time-tabs,
+  .map,
+  .map-legend,
+  .follow-section,
+  .share-section,
+  .analytics-panel,
+  .analytics-badge,
+  dialog { display: none !important; }
+  .map-fallback { display: block !important; }
+  .timeline-panel { border-top: 1px solid var(--line); }
+  .timeline-panel:not([open]) > :not(summary) { display: block; }
+  body { background: #fff; color: #000; }
+  a { color: #000; text-decoration: underline; }
+}

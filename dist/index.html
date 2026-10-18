@@ -11,6 +11,7 @@
   <link rel="stylesheet" href="share.css">
   <link rel="stylesheet" href="analytics.css">
   <link rel="stylesheet" href="responsive.css">
+  <link rel="stylesheet" href="accessibility.css">
 </head>
 <body>
   <a class="skip-link" href="#main">跳到主要内容</a>
@@ -21,14 +22,15 @@
   <header class="site-header">
     <a class="brand" href="index.html" aria-label="海风哨首页"><span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span><span><b>海风哨</b><small>COASTAL TYPHOON WATCH</small></span></a>
     <nav aria-label="主导航"><a href="#impact">本地影响</a><a href="#track">台风路径</a><a href="#official-warning">官方预警</a><a href="#sources">数据来源</a></nav>
-    <button class="location-chip" id="locationButton" type="button" aria-haspopup="dialog">⌖ 福建·厦门 <span>切换</span></button>
+    <button class="location-chip" id="locationButton" type="button" aria-haspopup="dialog" aria-controls="locationDialog" aria-expanded="false">⌖ 福建·厦门 <span>切换</span></button>
   </header>
+  <noscript><section class="noscript-warning" aria-label="JavaScript不可用"><strong>当前浏览器未启用 JavaScript，实时数据与辅助计算无法显示。</strong><span>你仍可访问<a href="https://www.xm.gov.cn/">厦门市政府网站</a>和页面下方的应急电话。</span></section></noscript>
   <main id="main">
     <section class="decision-hero" id="impact">
       <div class="hero-heading"><p class="eyebrow">LOCAL IMPACT · 本站坐标计算</p><span class="freshness" id="freshnessBadge">载入中</span></div>
       <div class="decision-grid">
         <div class="decision-copy">
-          <p class="location-label">当前关注 <button id="inlineLocation" type="button">福建·厦门</button></p>
+          <p class="location-label">当前关注 <button id="inlineLocation" type="button" aria-haspopup="dialog" aria-controls="locationDialog" aria-expanded="false">福建·厦门</button></p>
           <h1 id="impactTitle">正在判断台风与厦门的空间关系</h1>
           <p class="impact-summary" id="impactSummary">正在读取最新实况和预测路径，请稍候。</p>
           <div class="decision-actions"><a class="primary-button" href="#track">查看路径 <span>↓</span></a><button class="secondary-button" id="followButton" type="button" disabled>载入关注状态</button></div>
@@ -54,10 +56,12 @@
       </div>
     </section>
     <section class="track-section" id="track" aria-labelledby="trackTitle">
-      <div class="section-intro track-heading"><div><p class="eyebrow">TRACK & FORECAST</p><h2 id="trackTitle">台风路径与时间线</h2></div><div class="time-tabs" role="group" aria-label="预测时效"><button type="button" data-hours="24">24小时</button><button type="button" data-hours="48">48小时</button><button class="active" type="button" data-hours="72">72小时</button></div></div>
+      <div class="section-intro track-heading"><div><p class="eyebrow">TRACK & FORECAST</p><h2 id="trackTitle">台风路径与时间线</h2></div><div class="time-tabs" role="group" aria-label="预测时效"><button type="button" data-hours="24" aria-pressed="false">24小时</button><button type="button" data-hours="48" aria-pressed="false">48小时</button><button class="active" type="button" data-hours="72" aria-pressed="true">72小时</button></div></div>
       <p class="section-lead" id="trackSummary">正在载入路径。预测路径会随新资料调整，不用于导航。</p>
-      <div class="map-shell"><div id="map" class="map" role="application" aria-label="台风实况与预测路径地图"></div><div class="map-fallback" id="mapFallback" hidden>地图底图暂时不可用，请使用下方文字时间线。</div><div class="map-legend" aria-label="地图图例"><span><i class="observed-line"></i>实况路径</span><span><i class="forecast-line"></i>预测路径</span><span><i class="city-point"></i>关注城市</span></div></div>
-      <details class="timeline-panel" open><summary>查看文字路径</summary><ol id="timeline" class="timeline"><li>正在载入路径节点</li></ol></details>
+      <a class="skip-map" href="#timelinePanel">跳过交互地图，查看文字路径</a>
+      <p class="visually-hidden" id="mapDescription">地图展示台风实况路径、预测路径和厦门城市参考点；相同信息可在下方文字时间线中读取。</p>
+      <div class="map-shell"><div id="map" class="map" role="region" aria-label="台风实况与预测路径交互地图" aria-describedby="mapDescription"></div><div class="map-fallback" id="mapFallback" role="status" aria-live="polite" hidden>地图底图暂时不可用，请使用下方文字时间线。</div><div class="map-legend" aria-label="地图图例"><span><i class="observed-line" aria-hidden="true"></i>实况路径</span><span><i class="forecast-line" aria-hidden="true"></i>预测路径</span><span><i class="city-point" aria-hidden="true"></i>关注城市</span></div></div>
+      <details class="timeline-panel" id="timelinePanel" open><summary>查看文字路径</summary><ol id="timeline" class="timeline"><li>正在载入路径节点</li></ol></details>
     </section>
     <section class="warning-section" id="official-warning" aria-labelledby="warningTitle">
       <div class="section-intro light"><div><p class="eyebrow">LOCAL OFFICIAL WARNING</p><h2 id="warningTitle">厦门官方预警</h2></div><span class="capability-badge">尚未接入</span></div>
@@ -91,7 +95,7 @@
     </section>
   </main>
   <footer><div class="brand footer-brand"><span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span><span><b>海风哨</b><small>COASTAL TYPHOON WATCH</small></span></div><p>本站转述公开数据并提供辅助计算，不发布官方气象预报或预警。灾害期间请以当地气象台、应急管理部门和政府通知为准。</p></footer>
-  <dialog id="locationDialog" aria-labelledby="locationDialogTitle"><button class="dialog-close" type="button" aria-label="关闭">×</button><p class="eyebrow">LOCATION</p><h2 id="locationDialogTitle">选择关注城市</h2><button class="city-option selected" type="button" data-city="xiamen"><strong>福建·厦门</strong><span>首版验证城市</span></button><p>当前仅厦门完成城市参考点计算。浏览器精确定位将在后续版本开放，首次访问不会自动申请定位权限。</p></dialog>
+  <dialog id="locationDialog" aria-labelledby="locationDialogTitle" aria-describedby="locationDialogDescription"><button class="dialog-close" type="button" aria-label="关闭选择城市弹窗">×</button><p class="eyebrow">LOCATION</p><h2 id="locationDialogTitle">选择关注城市</h2><button class="city-option selected" type="button" data-city="xiamen" aria-pressed="true"><strong>福建·厦门</strong><span>首版验证城市</span></button><p id="locationDialogDescription">当前仅厦门完成城市参考点计算。浏览器精确定位将在后续版本开放，首次访问不会自动申请定位权限。</p></dialog>
   <script src="analytics.js"></script>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
   <script src="app.js"></script>

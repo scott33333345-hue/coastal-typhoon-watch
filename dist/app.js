@@ -10,6 +10,7 @@ let pathLayer;
 let currentImpact;
 let currentHealth;
 let mapFallbackTracked = false;
+let dialogOpener;
 const track = (name, properties = {}) => window.coastalAnalytics?.track(name, properties);
 
 function safe(value, fallback = '来源暂未提供') { return value === null || value === undefined || value === '' ? fallback : value; }
@@ -37,6 +38,11 @@ function directionName(value) { return ['北','东北','东','东南','南','西
 function pointOf(raw) { return raw && Number.isFinite(raw.latitude) && Number.isFinite(raw.longitude) ? { latitude: raw.latitude, longitude: raw.longitude } : null; }
 function readJson(key, fallback) { try { return JSON.parse(localStorage.getItem(key)) ?? fallback; } catch { return fallback; } }
 function writeJson(key, value) { try { localStorage.setItem(key, JSON.stringify(value)); return true; } catch { return false; } }
+function showMapFallback(reason, hideMap = false) {
+  if (hideMap) $('#map').hidden = true;
+  $('#mapFallback').hidden = false;
+  if (!mapFallbackTracked) { track('map_fallback_displayed', { reason }); mapFallbackTracked = true; }
+}
 
 function freshness() {
   const fetched = new Date(payload.fetchedAt);
@@ -123,11 +129,13 @@ function renderMap() {
   const latestDate = parseTime(storm.latest?.time);
   const forecasts = (storm.forecast || []).filter((item) => pointOf(item) && (!latestDate || parseTime(item.time) - latestDate <= selectedHours * 3600000));
   renderTimeline(observed, forecasts);
-  if (!window.L) { $('#map').hidden = true; $('#mapFallback').hidden = false; if (!mapFallbackTracked) { track('map_fallback_displayed', { reason: 'library_unavailable' }); mapFallbackTracked = true; } return; }
+  if (!window.L) { showMapFallback('library_unavailable', true); return; }
   try {
     if (!map) {
       map = L.map('map', { scrollWheelZoom: false });
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 10, attribution: '&copy; OpenStreetMap contributors' }).addTo(map);
+      const tiles = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 10, attribution: '&copy; OpenStreetMap contributors' });
+      tiles.on('tileerror', () => showMapFallback('tile_unavailable'));
+      tiles.addTo(map);
     }
     if (pathLayer) pathLayer.remove();
     pathLayer = L.layerGroup().addTo(map);
@@ -138,11 +146,11 @@ function renderMap() {
     if (forecastLatLng.length) L.polyline([[storm.latest.latitude, storm.latest.longitude], ...forecastLatLng], { color: '#d98918', weight: 4, dashArray: '10 8' }).addTo(pathLayer);
     observed.slice(-12).forEach((p) => { L.circleMarker([p.latitude, p.longitude], { radius: 4, color: '#fff', weight: 2, fillColor: '#087f78', fillOpacity: 1 }).bindPopup(`<b>实况 · ${formatTime(p.time)}</b><br>${safe(p.strength)} · ${safe(p.windLevel, '—')}级`).addTo(pathLayer); bounds.push([p.latitude, p.longitude]); });
     forecasts.forEach((p) => { L.circleMarker([p.latitude, p.longitude], { radius: 6, color: '#d98918', weight: 3, fillColor: '#fff', fillOpacity: 1 }).bindPopup(`<b>预测 · ${formatTime(p.time)}</b><br>${safe(storm.forecastAgency)} · ${safe(p.strength)}`).addTo(pathLayer); bounds.push([p.latitude, p.longitude]); });
-    L.marker([XIAMEN.latitude, XIAMEN.longitude], { icon: markerIcon('city-marker', 16) }).bindPopup('<b>福建·厦门</b><br>城市参考点').addTo(pathLayer); bounds.push([XIAMEN.latitude, XIAMEN.longitude]);
-    if (storm.latest) L.marker([storm.latest.latitude, storm.latest.longitude], { icon: markerIcon('storm-marker', 20) }).bindPopup(`<b>${storm.name}当前位置</b><br>${formatTime(storm.latest.time)}`).addTo(pathLayer);
+    L.marker([XIAMEN.latitude, XIAMEN.longitude], { icon: markerIcon('city-marker', 16), title: '福建厦门城市参考点' }).bindPopup('<b>福建·厦门</b><br>城市参考点').addTo(pathLayer); bounds.push([XIAMEN.latitude, XIAMEN.longitude]);
+    if (storm.latest) L.marker([storm.latest.latitude, storm.latest.longitude], { icon: markerIcon('storm-marker', 20), title: `${storm.name}当前位置，${formatTime(storm.latest.time)}` }).bindPopup(`<b>${storm.name}当前位置</b><br>${formatTime(storm.latest.time)}`).addTo(pathLayer);
     if (bounds.length) map.fitBounds(bounds, { padding: [35, 35], maxZoom: 6 });
     setTimeout(() => map.invalidateSize(), 0);
-  } catch { $('#map').hidden = true; $('#mapFallback').hidden = false; if (!mapFallbackTracked) { track('map_fallback_displayed', { reason: 'render_error' }); mapFallbackTracked = true; } }
+  } catch { showMapFallback('render_error', true); }
 }
 
 function renderTimeline(observed, forecasts) {
@@ -161,10 +169,22 @@ function renderFollow(impact) {
   const button = $('#followButton'); button.disabled = false;
   const syncButton = () => { const active = followed.has(storm.id); button.textContent = active ? '已关注此台风 ✓' : '关注此台风'; button.classList.toggle('following', active); button.setAttribute('aria-pressed', String(active)); };
   syncButton();
-  button.onclick = () => { followed.has(storm.id) ? followed.delete(storm.id) : followed.add(storm.id); writeJson(STORAGE.followed, [...followed]); syncButton(); const active = followed.has(storm.id); $('#reminderStatus').textContent = active ? '已保存在当前浏览器，下次打开时将检查变化。' : '已取消关注。'; track('follow_changed', { storm_id: storm.id, followed: active }); };
+  button.onclick = () => {
+    const wasActive = followed.has(storm.id);
+    wasActive ? followed.delete(storm.id) : followed.add(storm.id);
+    const savedSuccessfully = writeJson(STORAGE.followed, [...followed]);
+    if (!savedSuccessfully) {
+      wasActive ? followed.add(storm.id) : followed.delete(storm.id);
+      syncButton();
+      $('#reminderStatus').classList.add('storage-warning');
+      $('#reminderStatus').textContent = '当前浏览器禁止本地保存，关注状态未更改。你仍可正常查看台风信息。';
+      return;
+    }
+    syncButton(); const active = followed.has(storm.id); $('#reminderStatus').classList.remove('storage-warning'); $('#reminderStatus').textContent = active ? '已保存在当前浏览器，下次打开时将检查变化。' : '已取消关注。'; track('follow_changed', { storm_id: storm.id, followed: active });
+  };
   const saved = readJson(STORAGE.reminders, {});
   $('#reminderForm').elements.strength.checked = Boolean(saved.strength); $('#reminderForm').elements.distance.checked = Boolean(saved.distance); $('#reminderForm').elements.forecast.checked = Boolean(saved.forecast);
-  $('#reminderForm').onsubmit = (event) => { event.preventDefault(); const form = new FormData(event.currentTarget); const values = { strength: form.has('strength'), distance: form.has('distance'), forecast: form.has('forecast') }; writeJson(STORAGE.reminders, values); $('#reminderStatus').textContent = '提醒偏好已保存在当前浏览器。网页关闭后不会发送系统推送。'; track('reminder_preferences_saved', { storm_id: storm.id, enabled_count: Object.values(values).filter(Boolean).length }); };
+  $('#reminderForm').onsubmit = (event) => { event.preventDefault(); const form = new FormData(event.currentTarget); const values = { strength: form.has('strength'), distance: form.has('distance'), forecast: form.has('forecast') }; const savedSuccessfully = writeJson(STORAGE.reminders, values); $('#reminderStatus').classList.toggle('storage-warning', !savedSuccessfully); $('#reminderStatus').textContent = savedSuccessfully ? '提醒偏好已保存在当前浏览器。网页关闭后不会发送系统推送。' : '当前浏览器禁止本地保存，提醒偏好未保存。'; if (savedSuccessfully) track('reminder_preferences_saved', { storm_id: storm.id, enabled_count: Object.values(values).filter(Boolean).length }); };
   const snapshots = readJson(STORAGE.snapshots, {}); const previous = snapshots[storm.id]; const changes = [];
   if (previous && followed.has(storm.id)) { if (previous.strength !== storm.latest?.strength && saved.strength) changes.push(`强度由${previous.strength || '未知'}变为${storm.latest?.strength || '未知'}`); if (impact && saved.distance && Math.abs(previous.distance - impact.currentDistance) >= 50) changes.push(`与厦门距离变化约${Math.round(Math.abs(previous.distance - impact.currentDistance))}公里`); if (previous.forecastEnd !== storm.forecast?.at(-1)?.time && saved.forecast) changes.push('预测路径已更新'); }
   if (changes.length) $('#reminderStatus').textContent = `自上次查看后：${changes.join('；')}。`;
@@ -202,10 +222,10 @@ function render() {
   renderOverview(); const impact = calculateImpact(); currentImpact = impact; renderImpact(impact); renderMap(); renderFollow(impact);
 }
 
-document.querySelectorAll('.time-tabs button').forEach((button) => button.addEventListener('click', () => { document.querySelectorAll('.time-tabs button').forEach((item) => item.classList.remove('active')); button.classList.add('active'); selectedHours = Number(button.dataset.hours); track('forecast_range_changed', { storm_id: storm?.id, forecast_hours: selectedHours }); renderMap(); }));
-const dialog = $('#locationDialog'); [$('#locationButton'), $('#inlineLocation')].forEach((button) => button.addEventListener('click', () => dialog.showModal())); $('.dialog-close').addEventListener('click', () => dialog.close()); $('.city-option').addEventListener('click', () => { writeJson(STORAGE.city, 'xiamen'); dialog.close(); });
+document.querySelectorAll('.time-tabs button').forEach((button) => button.addEventListener('click', () => { document.querySelectorAll('.time-tabs button').forEach((item) => { item.classList.remove('active'); item.setAttribute('aria-pressed', 'false'); }); button.classList.add('active'); button.setAttribute('aria-pressed', 'true'); selectedHours = Number(button.dataset.hours); track('forecast_range_changed', { storm_id: storm?.id, forecast_hours: selectedHours }); renderMap(); }));
+const dialog = $('#locationDialog'); const dialogButtons = [$('#locationButton'), $('#inlineLocation')]; dialogButtons.forEach((button) => button.addEventListener('click', () => { dialogOpener = button; dialogButtons.forEach((item) => item.setAttribute('aria-expanded', 'true')); dialog.showModal(); $('.dialog-close').focus(); })); $('.dialog-close').addEventListener('click', () => dialog.close()); dialog.addEventListener('close', () => { dialogButtons.forEach((item) => item.setAttribute('aria-expanded', 'false')); dialogOpener?.focus(); dialogOpener = null; }); $('.city-option').addEventListener('click', () => { writeJson(STORAGE.city, 'xiamen'); dialog.close(); });
 $('.city-option').addEventListener('click', () => track('city_selected', { city_id: 'xiamen' }));
-$('#sourceJump').addEventListener('click', () => { track('official_source_opened', { source: 'source_section' }); $('#sources').scrollIntoView({ behavior: 'smooth' }); });
+$('#sourceJump').addEventListener('click', () => { track('official_source_opened', { source: 'source_section' }); $('#sources').scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' }); });
 $('#shareSummary').addEventListener('click', shareCurrent);
 $('#copyLink').addEventListener('click', async () => { track('share_started', { storm_id: storm.id, share_method: 'link_copy' }); try { await copyText(sharePayload().url); $('#shareStatus').textContent = '详情链接已复制，不包含精确位置。'; track('share_completed', { storm_id: storm.id, share_method: 'link_copy' }); } catch { $('#shareStatus').textContent = '复制失败，请从浏览器地址栏复制链接。'; track('share_failed', { storm_id: storm.id, share_method: 'link_copy', reason: 'client_error' }); } });
 $('#detailLink').addEventListener('click', () => track('typhoon_detail_opened', { storm_id: storm?.id }));
@@ -221,5 +241,5 @@ fetch(DATA_URL, { cache: 'no-store' }).then((response) => { if (!response.ok) th
   track('data_load_failed', { reason: error instanceof TypeError ? 'network' : 'invalid_data' });
   $('#dataStrip').className = 'data-strip failed'; $('#dataHealth').textContent = '数据加载失败 · 请核对官方渠道'; $('#freshnessBadge').textContent = '当前状态未知';
   $('#impactTitle').textContent = '当前无法获取台风数据'; $('#impactSummary').textContent = '本站不会根据缺失数据判断风险，请直接查看官方来源。'; $('#actionList').innerHTML = '<li>重新加载页面</li><li>前往官方渠道核验</li>';
-  $('#map').hidden = true; $('#mapFallback').hidden = false; track('fallback_displayed', { reason: 'data_load_failed' }); console.error(error);
+  showMapFallback('data_load_failed', true); track('fallback_displayed', { reason: 'data_load_failed' }); console.error(error);
 });
