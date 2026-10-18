@@ -1,0 +1,185 @@
+:where(.decision-hero,.storm-overview,.track-section,.warning-section,.emergency-section,.source-section,.detail-hero,.detail-section) > * {
+  max-width: 1296px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.decision-copy h1,
+.impact-summary,
+.storm-identity,
+.metric-grid strong,
+.detail-hero h1,
+.detail-hero p,
+.empty-state,
+.empty-state strong {
+  overflow-wrap: anywhere;
+}
+
+.primary-button,
+.secondary-button,
+.location-chip,
+.time-tabs button,
+.reminder-form label,
+.official-links a,
+.phone-grid a {
+  min-height: 44px;
+}
+
+.detail-table-panel summary::after {
+  content: "左右滑动查看完整数据";
+  float: right;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 400;
+}
+
+@media (max-width: 900px) {
+  .decision-hero,
+  .storm-overview,
+  .track-section,
+  .warning-section,
+  .follow-section,
+  .share-section,
+  .emergency-section,
+  .source-section,
+  .detail-hero,
+  .detail-section {
+    padding-left: 28px;
+    padding-right: 28px;
+  }
+
+  .decision-grid { gap: 34px; }
+  .action-card { max-width: none; }
+  .map { height: 400px; }
+}
+
+@media (max-width: 560px) {
+  html,
+  body { max-width: 100%; overflow-x: clip; }
+
+  .data-strip {
+    min-height: 44px;
+    flex-wrap: wrap;
+    gap: 4px 10px;
+    padding: 8px 16px;
+    line-height: 1.35;
+  }
+
+  .site-header {
+    min-height: 66px;
+    height: auto;
+    gap: 10px;
+  }
+
+  .brand { min-width: 0; gap: 9px; }
+  .brand b { white-space: nowrap; }
+  .brand small { display: none; }
+  .site-header .arrow-link { white-space: nowrap; }
+  .location-chip { flex: 0 0 auto; max-width: 128px; overflow: hidden; white-space: nowrap; }
+
+  .decision-hero,
+  .storm-overview,
+  .track-section,
+  .warning-section,
+  .follow-section,
+  .share-section,
+  .emergency-section,
+  .source-section,
+  .detail-hero,
+  .detail-section {
+    padding-left: 18px;
+    padding-right: 18px;
+  }
+
+  .decision-copy h1 {
+    font-size: clamp(32px, 10.5vw, 40px);
+    line-height: 1.18;
+    letter-spacing: -.025em;
+    word-break: break-word;
+  }
+
+  .impact-summary { line-height: 1.7; }
+  .action-card { padding: 24px 20px; }
+  .action-card h2 { font-size: 24px; }
+
+  .impact-facts,
+  .metric-grid { grid-template-columns: 1fr; }
+
+  .impact-facts article,
+  .metric-grid article {
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .impact-facts article:last-child,
+  .metric-grid article:last-child { border-bottom: 0; }
+
+  .impact-facts article:nth-child(2),
+  .metric-grid article:nth-child(2) { border-right: 0; }
+
+  .storm-identity { gap: 18px; }
+  .storm-identity h3 { font-size: 38px; }
+  .storm-identity > p { font-size: 18px; }
+  .section-intro { gap: 12px; }
+  .section-intro h2 { font-size: 34px; }
+
+  .track-heading { gap: 20px; }
+  .time-tabs button { padding: 10px 7px; }
+  .map { height: min(72vh, 350px); }
+  .map-legend { padding: 13px 18px; }
+
+  .timeline-panel summary { min-height: 48px; }
+  .timeline { padding-left: 16px; padding-right: 16px; }
+  .timeline li { grid-template-columns: 1fr auto; gap: 6px 12px; }
+
+  .official-state,
+  .general-advice { min-width: 0; }
+  .official-links strong { font-size: 20px; }
+  .phone-grid a { min-width: 0; }
+
+  .detail-hero { padding-top: 48px; padding-bottom: 48px; }
+  .detail-hero h1 { font-size: clamp(42px, 15vw, 58px); }
+  .detail-title { gap: 12px; }
+  .detail-title p { letter-spacing: .12em; }
+  .detail-section { padding-top: 48px; padding-bottom: 48px; }
+  .trend-grid article { padding: 14px; }
+
+  .detail-table-panel summary::after {
+    float: none;
+    display: block;
+    margin-top: 3px;
+  }
+
+  .table-scroll {
+    margin: 0 -1px;
+    padding-left: 14px;
+    padding-right: 14px;
+    overscroll-behavior-x: contain;
+  }
+
+  .empty-state { padding: 24px 20px; }
+  .empty-state strong { display: block; font-size: clamp(24px, 8vw, 30px); line-height: 1.35; }
+  .empty-state .primary-button { width: 100%; }
+}
+
+@media (max-width: 380px) {
+  .site-header { padding-left: 12px; padding-right: 12px; }
+  .brand-mark { width: 29px; height: 29px; }
+  .location-chip { max-width: 116px; padding-left: 8px; padding-right: 8px; }
+  .decision-copy h1 { font-size: 32px; }
+  .phone-grid { grid-template-columns: 1fr; }
+  .analytics-head { flex-direction: column; }
+}
+
+@media (min-width: 1440px) {
+  .decision-hero,
+  .storm-overview,
+  .track-section,
+  .warning-section,
+  .follow-section,
+  .share-section,
+  .emergency-section,
+  .source-section,
+  .detail-hero,
+  .detail-section { padding-left: max(72px, calc((100vw - 1296px) / 2)); padding-right: max(72px, calc((100vw - 1296px) / 2)); }
+}
