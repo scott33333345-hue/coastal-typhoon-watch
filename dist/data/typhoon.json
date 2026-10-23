@@ -5,7 +5,7 @@
     "url": "https://typhoon.slt.zj.gov.cn/",
     "listEndpoint": "https://typhoon.slt.zj.gov.cn/Api/TyphoonList/2026"
   },
-  "fetchedAt": "2026-10-23T02:55:49.602Z",
+  "fetchedAt": "2026-10-23T03:35:07.577Z",
   "year": 2026,
   "activeCount": 1,
   "mode": "live",
@@ -16,19 +16,19 @@
       "englishName": "CHAMPI",
       "active": true,
       "startTime": "2026-10-15 14:00:00",
-      "endTime": "2026-10-23 10:00:00",
+      "endTime": "2026-10-23 11:00:00",
       "warningLevel": "white",
       "forecastAgency": "中国",
       "latest": {
         "type": "observed",
-        "time": "2026-10-23 10:00:00",
-        "longitude": 123.7,
-        "latitude": 22.9,
+        "time": "2026-10-23 11:00:00",
+        "longitude": 123.6,
+        "latitude": 23.1,
         "strength": "强台风",
         "windLevel": 14,
         "windSpeed": 45,
         "pressure": 950,
-        "moveSpeed": 20,
+        "moveSpeed": 17,
         "moveDirection": "北西",
         "radius7": "500|450|480|350",
         "radius10": "210|200|180|150",
@@ -1159,9 +1159,39 @@
           "radius7": "500|450|480|350",
           "radius10": "210|200|180|150",
           "radius12": "90|85|85|80"
+        },
+        {
+          "type": "observed",
+          "time": "2026-10-23 11:00:00",
+          "longitude": 123.6,
+          "latitude": 23.1,
+          "strength": "强台风",
+          "windLevel": 14,
+          "windSpeed": 45,
+          "pressure": 950,
+          "moveSpeed": 17,
+          "moveDirection": "北西",
+          "radius7": "500|450|480|350",
+          "radius10": "210|200|180|150",
+          "radius12": "90|85|85|80"
         }
       ],
       "forecast": [
+        {
+          "type": "forecast",
+          "time": "2026-10-23 10:00:00",
+          "longitude": 123.7,
+          "latitude": 22.9,
+          "strength": "强台风",
+          "windLevel": 14,
+          "windSpeed": 45,
+          "pressure": 950,
+          "moveSpeed": null,
+          "moveDirection": null,
+          "radius7": null,
+          "radius10": null,
+          "radius12": null
+        },
         {
           "type": "forecast",
           "time": "2026-10-23 16:00:00",
@@ -1301,5 +1331,5 @@
     }
   ],
   "notice": "当前展示活动台风。请以当地气象台和政府发布的信息为准。",
-  "dataChangedAt": "2026-10-23T02:55:49.602Z"
+  "dataChangedAt": "2026-10-23T03:35:07.577Z"
 }
