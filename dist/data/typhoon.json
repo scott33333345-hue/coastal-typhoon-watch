@@ -5,7 +5,7 @@
     "url": "https://typhoon.slt.zj.gov.cn/",
     "listEndpoint": "https://typhoon.slt.zj.gov.cn/Api/TyphoonList/2026"
   },
-  "fetchedAt": "2026-10-23T20:03:35.320Z",
+  "fetchedAt": "2026-10-23T20:36:06.894Z",
   "year": 2026,
   "activeCount": 2,
   "mode": "live",
@@ -16,13 +16,13 @@
       "englishName": "CHAMPI",
       "active": true,
       "startTime": "2026-10-15 14:00:00",
-      "endTime": "2026-10-24 03:00:00",
+      "endTime": "2026-10-24 04:00:00",
       "warningLevel": "white",
       "forecastAgency": "中国",
       "latest": {
         "type": "observed",
-        "time": "2026-10-24 03:00:00",
-        "longitude": 122,
+        "time": "2026-10-24 04:00:00",
+        "longitude": 122.1,
         "latitude": 24.5,
         "strength": "台风",
         "windLevel": 13,
@@ -1414,14 +1414,29 @@
           "radius7": "480|500|450|380",
           "radius10": "210|200|160|150",
           "radius12": "90|80|60|60"
+        },
+        {
+          "type": "observed",
+          "time": "2026-10-24 04:00:00",
+          "longitude": 122.1,
+          "latitude": 24.5,
+          "strength": "台风",
+          "windLevel": 13,
+          "windSpeed": 40,
+          "pressure": 960,
+          "moveSpeed": 6,
+          "moveDirection": "北",
+          "radius7": "480|500|450|380",
+          "radius10": "210|200|160|150",
+          "radius12": "90|80|60|60"
         }
       ],
       "forecast": [
         {
           "type": "forecast",
-          "time": "2026-10-24 09:00:00",
+          "time": "2026-10-24 10:00:00",
           "longitude": 122.2,
-          "latitude": 24.5,
+          "latitude": 24.8,
           "strength": "台风",
           "windLevel": 12,
           "windSpeed": 35,
@@ -1434,9 +1449,9 @@
         },
         {
           "type": "forecast",
-          "time": "2026-10-24 15:00:00",
-          "longitude": 122.23,
-          "latitude": 26.2,
+          "time": "2026-10-24 16:00:00",
+          "longitude": 122.27,
+          "latitude": 26.4,
           "strength": "台风",
           "windLevel": 12,
           "windSpeed": 33,
@@ -1449,9 +1464,9 @@
         },
         {
           "type": "forecast",
-          "time": "2026-10-24 21:00:00",
-          "longitude": 122.48,
-          "latitude": 27.37,
+          "time": "2026-10-24 22:00:00",
+          "longitude": 122.57,
+          "latitude": 27.53,
           "strength": "强热带风暴",
           "windLevel": 11,
           "windSpeed": 30,
@@ -1464,9 +1479,9 @@
         },
         {
           "type": "forecast",
-          "time": "2026-10-25 03:00:00",
-          "longitude": 123.03,
-          "latitude": 28.36,
+          "time": "2026-10-25 04:00:00",
+          "longitude": 123.15,
+          "latitude": 28.52,
           "strength": "强热带风暴",
           "windLevel": 10,
           "windSpeed": 28,
@@ -1479,9 +1494,9 @@
         },
         {
           "type": "forecast",
-          "time": "2026-10-25 15:00:00",
-          "longitude": 124.57,
-          "latitude": 30.24,
+          "time": "2026-10-25 16:00:00",
+          "longitude": 124.73,
+          "latitude": 30.38,
           "strength": "热带风暴",
           "windLevel": 9,
           "windSpeed": 23,
@@ -1494,9 +1509,9 @@
         },
         {
           "type": "forecast",
-          "time": "2026-10-26 03:00:00",
-          "longitude": 126.73,
-          "latitude": 31.91,
+          "time": "2026-10-26 04:00:00",
+          "longitude": 127.05,
+          "latitude": 32.02,
           "strength": "热带风暴",
           "windLevel": 8,
           "windSpeed": 18,
@@ -1509,9 +1524,9 @@
         },
         {
           "type": "forecast",
-          "time": "2026-10-26 15:00:00",
-          "longitude": 130.63,
-          "latitude": 33.21,
+          "time": "2026-10-26 16:00:00",
+          "longitude": 130.95,
+          "latitude": 33.32,
           "strength": "热带低压",
           "windLevel": 7,
           "windSpeed": 15,
@@ -1690,5 +1705,5 @@
     }
   ],
   "notice": "当前展示活动台风。请以当地气象台和政府发布的信息为准。",
-  "dataChangedAt": "2026-10-23T20:03:35.320Z"
+  "dataChangedAt": "2026-10-23T20:36:06.894Z"
 }
