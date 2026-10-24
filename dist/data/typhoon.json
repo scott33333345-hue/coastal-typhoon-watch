@@ -5,7 +5,7 @@
     "url": "https://typhoon.slt.zj.gov.cn/",
     "listEndpoint": "https://typhoon.slt.zj.gov.cn/Api/TyphoonList/2026"
   },
-  "fetchedAt": "2026-10-24T14:49:08.526Z",
+  "fetchedAt": "2026-10-24T15:11:23.206Z",
   "year": 2026,
   "activeCount": 2,
   "mode": "live",
@@ -1704,24 +1704,9 @@
       "forecast": [
         {
           "type": "forecast",
-          "time": "2026-10-24 21:00:00",
-          "longitude": 123.4,
-          "latitude": 28,
-          "strength": "强热带风暴",
-          "windLevel": 10,
-          "windSpeed": 25,
-          "pressure": 985,
-          "moveSpeed": null,
-          "moveDirection": null,
-          "radius7": null,
-          "radius10": null,
-          "radius12": null
-        },
-        {
-          "type": "forecast",
-          "time": "2026-10-25 03:00:00",
-          "longitude": 124.1,
-          "latitude": 28.7,
+          "time": "2026-10-25 04:00:00",
+          "longitude": 124.2,
+          "latitude": 28.8,
           "strength": "热带风暴",
           "windLevel": 9,
           "windSpeed": 23,
@@ -1734,9 +1719,9 @@
         },
         {
           "type": "forecast",
-          "time": "2026-10-25 09:00:00",
-          "longitude": 124.75,
-          "latitude": 29.33,
+          "time": "2026-10-25 10:00:00",
+          "longitude": 124.9,
+          "latitude": 29.47,
           "strength": "热带风暴",
           "windLevel": 9,
           "windSpeed": 23,
@@ -1749,9 +1734,9 @@
         },
         {
           "type": "forecast",
-          "time": "2026-10-25 15:00:00",
-          "longitude": 125.65,
-          "latitude": 30.13,
+          "time": "2026-10-25 16:00:00",
+          "longitude": 125.8,
+          "latitude": 30.27,
           "strength": "热带风暴",
           "windLevel": 8,
           "windSpeed": 20,
@@ -1764,9 +1749,9 @@
         },
         {
           "type": "forecast",
-          "time": "2026-10-25 21:00:00",
-          "longitude": 126.61,
-          "latitude": 30.89,
+          "time": "2026-10-25 22:00:00",
+          "longitude": 126.82,
+          "latitude": 30.98,
           "strength": "热带风暴",
           "windLevel": 8,
           "windSpeed": 18,
@@ -1779,9 +1764,9 @@
         },
         {
           "type": "forecast",
-          "time": "2026-10-26 09:00:00",
-          "longitude": 129.11,
-          "latitude": 31.99,
+          "time": "2026-10-26 10:00:00",
+          "longitude": 129.32,
+          "latitude": 32.08,
           "strength": "热带低压",
           "windLevel": 7,
           "windSpeed": 15,
@@ -2050,5 +2035,5 @@
     }
   ],
   "notice": "当前展示活动台风。请以当地气象台和政府发布的信息为准。",
-  "dataChangedAt": "2026-10-24T14:49:08.526Z"
+  "dataChangedAt": "2026-10-24T15:11:23.206Z"
 }
