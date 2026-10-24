@@ -5,7 +5,7 @@
     "url": "https://typhoon.slt.zj.gov.cn/",
     "listEndpoint": "https://typhoon.slt.zj.gov.cn/Api/TyphoonList/2026"
   },
-  "fetchedAt": "2026-10-24T13:21:15.220Z",
+  "fetchedAt": "2026-10-24T14:49:08.526Z",
   "year": 2026,
   "activeCount": 2,
   "mode": "live",
@@ -16,12 +16,12 @@
       "englishName": "CHAMPI",
       "active": true,
       "startTime": "2026-10-15 14:00:00",
-      "endTime": "2026-10-24 21:00:00",
+      "endTime": "2026-10-24 22:00:00",
       "warningLevel": "1",
       "forecastAgency": "中国",
       "latest": {
         "type": "observed",
-        "time": "2026-10-24 21:00:00",
+        "time": "2026-10-24 22:00:00",
         "longitude": 123.4,
         "latitude": 28,
         "strength": "强热带风暴",
@@ -1684,9 +1684,39 @@
           "radius7": "400|420|280|260",
           "radius10": null,
           "radius12": null
+        },
+        {
+          "type": "observed",
+          "time": "2026-10-24 22:00:00",
+          "longitude": 123.4,
+          "latitude": 28,
+          "strength": "强热带风暴",
+          "windLevel": 10,
+          "windSpeed": 25,
+          "pressure": 985,
+          "moveSpeed": 17,
+          "moveDirection": "北东",
+          "radius7": "400|420|280|260",
+          "radius10": null,
+          "radius12": null
         }
       ],
       "forecast": [
+        {
+          "type": "forecast",
+          "time": "2026-10-24 21:00:00",
+          "longitude": 123.4,
+          "latitude": 28,
+          "strength": "强热带风暴",
+          "windLevel": 10,
+          "windSpeed": 25,
+          "pressure": 985,
+          "moveSpeed": null,
+          "moveDirection": null,
+          "radius7": null,
+          "radius10": null,
+          "radius12": null
+        },
         {
           "type": "forecast",
           "time": "2026-10-25 03:00:00",
@@ -2020,5 +2050,5 @@
     }
   ],
   "notice": "当前展示活动台风。请以当地气象台和政府发布的信息为准。",
-  "dataChangedAt": "2026-10-24T13:21:15.220Z"
+  "dataChangedAt": "2026-10-24T14:49:08.526Z"
 }
