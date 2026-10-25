@@ -5,7 +5,7 @@
     "url": "https://typhoon.slt.zj.gov.cn/",
     "listEndpoint": "https://typhoon.slt.zj.gov.cn/Api/TyphoonList/2026"
   },
-  "fetchedAt": "2026-10-25T13:16:04.720Z",
+  "fetchedAt": "2026-10-25T14:11:34.989Z",
   "year": 2026,
   "activeCount": 2,
   "mode": "live",
@@ -16,14 +16,14 @@
       "englishName": "CHAMPI",
       "active": true,
       "startTime": "2026-10-15 14:00:00",
-      "endTime": "2026-10-25 21:00:00",
+      "endTime": "2026-10-25 22:00:00",
       "warningLevel": "1",
       "forecastAgency": "中国",
       "latest": {
         "type": "observed",
-        "time": "2026-10-25 21:00:00",
-        "longitude": 126.7,
-        "latitude": 30.9,
+        "time": "2026-10-25 22:00:00",
+        "longitude": 126.9,
+        "latitude": 31,
         "strength": "热带风暴",
         "windLevel": 8,
         "windSpeed": 18,
@@ -2044,14 +2044,29 @@
           "radius7": "380|400|280|260",
           "radius10": null,
           "radius12": null
+        },
+        {
+          "type": "observed",
+          "time": "2026-10-25 22:00:00",
+          "longitude": 126.9,
+          "latitude": 31,
+          "strength": "热带风暴",
+          "windLevel": 8,
+          "windSpeed": 18,
+          "pressure": 998,
+          "moveSpeed": 21,
+          "moveDirection": "东北东",
+          "radius7": "380|400|280|260",
+          "radius10": null,
+          "radius12": null
         }
       ],
       "forecast": [
         {
           "type": "forecast",
-          "time": "2026-10-26 03:00:00",
-          "longitude": 127.82,
-          "latitude": 31.17,
+          "time": "2026-10-26 04:00:00",
+          "longitude": 128.03,
+          "latitude": 31.23,
           "strength": "热带风暴",
           "windLevel": 8,
           "windSpeed": 18,
@@ -2064,9 +2079,9 @@
         },
         {
           "type": "forecast",
-          "time": "2026-10-26 09:00:00",
-          "longitude": 129.12,
-          "latitude": 31.57,
+          "time": "2026-10-26 10:00:00",
+          "longitude": 129.33,
+          "latitude": 31.63,
           "strength": "热带风暴",
           "windLevel": 8,
           "windSpeed": 18,
@@ -2455,5 +2470,5 @@
     }
   ],
   "notice": "当前展示活动台风。请以当地气象台和政府发布的信息为准。",
-  "dataChangedAt": "2026-10-25T13:16:04.720Z"
+  "dataChangedAt": "2026-10-25T14:11:34.989Z"
 }
