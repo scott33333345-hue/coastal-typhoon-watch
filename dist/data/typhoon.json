@@ -5,7 +5,7 @@
     "url": "https://typhoon.slt.zj.gov.cn/",
     "listEndpoint": "https://typhoon.slt.zj.gov.cn/Api/TyphoonList/2026"
   },
-  "fetchedAt": "2026-11-02T15:41:07.823Z",
+  "fetchedAt": "2026-11-02T19:40:15.120Z",
   "year": 2026,
   "activeCount": 1,
   "mode": "live",
@@ -16,20 +16,20 @@
       "englishName": "IN-FA",
       "active": true,
       "startTime": "2026-10-24 02:00:00",
-      "endTime": "2026-11-02 23:00:00",
+      "endTime": "2026-11-03 02:00:00",
       "warningLevel": "0",
       "forecastAgency": "中国",
       "latest": {
         "type": "observed",
-        "time": "2026-11-02 23:00:00",
-        "longitude": 140,
-        "latitude": 23,
+        "time": "2026-11-03 02:00:00",
+        "longitude": 139.8,
+        "latitude": 23.1,
         "strength": "强热带风暴",
         "windLevel": 10,
         "windSpeed": 28,
         "pressure": 982,
         "moveSpeed": 6,
-        "moveDirection": "西北西",
+        "moveDirection": "西",
         "radius7": "280|250|360|220",
         "radius10": "100|80|120|80",
         "radius12": null
@@ -1234,13 +1234,28 @@
           "radius7": "280|250|360|220",
           "radius10": "100|80|120|80",
           "radius12": null
+        },
+        {
+          "type": "observed",
+          "time": "2026-11-03 02:00:00",
+          "longitude": 139.8,
+          "latitude": 23.1,
+          "strength": "强热带风暴",
+          "windLevel": 10,
+          "windSpeed": 28,
+          "pressure": 982,
+          "moveSpeed": 6,
+          "moveDirection": "西",
+          "radius7": "280|250|360|220",
+          "radius10": "100|80|120|80",
+          "radius12": null
         }
       ],
       "forecast": [
         {
           "type": "forecast",
-          "time": "2026-11-03 11:00:00",
-          "longitude": 139.3,
+          "time": "2026-11-03 14:00:00",
+          "longitude": 139.1,
           "latitude": 23.2,
           "strength": "强热带风暴",
           "windLevel": 10,
@@ -1254,8 +1269,8 @@
         },
         {
           "type": "forecast",
-          "time": "2026-11-03 23:00:00",
-          "longitude": 138.7,
+          "time": "2026-11-04 02:00:00",
+          "longitude": 138.4,
           "latitude": 23.8,
           "strength": "强热带风暴",
           "windLevel": 10,
@@ -1269,9 +1284,9 @@
         },
         {
           "type": "forecast",
-          "time": "2026-11-04 11:00:00",
-          "longitude": 138.4,
-          "latitude": 24.6,
+          "time": "2026-11-04 14:00:00",
+          "longitude": 138,
+          "latitude": 24.9,
           "strength": "强热带风暴",
           "windLevel": 10,
           "windSpeed": 28,
@@ -1284,9 +1299,9 @@
         },
         {
           "type": "forecast",
-          "time": "2026-11-04 23:00:00",
-          "longitude": 138.6,
-          "latitude": 26.1,
+          "time": "2026-11-05 02:00:00",
+          "longitude": 138.2,
+          "latitude": 26.4,
           "strength": "强热带风暴",
           "windLevel": 10,
           "windSpeed": 28,
@@ -1299,9 +1314,9 @@
         },
         {
           "type": "forecast",
-          "time": "2026-11-05 11:00:00",
-          "longitude": 139.9,
-          "latitude": 28.3,
+          "time": "2026-11-05 14:00:00",
+          "longitude": 139.8,
+          "latitude": 28.7,
           "strength": "强热带风暴",
           "windLevel": 10,
           "windSpeed": 28,
@@ -1314,9 +1329,9 @@
         },
         {
           "type": "forecast",
-          "time": "2026-11-05 23:00:00",
-          "longitude": 143.9,
-          "latitude": 32.1,
+          "time": "2026-11-06 02:00:00",
+          "longitude": 143.2,
+          "latitude": 31.5,
           "strength": "强热带风暴",
           "windLevel": 10,
           "windSpeed": 25,
@@ -1329,9 +1344,9 @@
         },
         {
           "type": "forecast",
-          "time": "2026-11-06 23:00:00",
-          "longitude": 157.7,
-          "latitude": 42.4,
+          "time": "2026-11-07 02:00:00",
+          "longitude": 159.4,
+          "latitude": 41.4,
           "strength": "热带风暴",
           "windLevel": 9,
           "windSpeed": 23,
@@ -1346,5 +1361,5 @@
     }
   ],
   "notice": "当前展示活动台风。请以当地气象台和政府发布的信息为准。",
-  "dataChangedAt": "2026-11-02T15:41:07.823Z"
+  "dataChangedAt": "2026-11-02T19:40:15.120Z"
 }
