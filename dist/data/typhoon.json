@@ -5,16 +5,16 @@
     "url": "https://typhoon.slt.zj.gov.cn/",
     "listEndpoint": "https://typhoon.slt.zj.gov.cn/Api/TyphoonList/2026"
   },
-  "fetchedAt": "2026-11-05T04:18:52.430Z",
+  "fetchedAt": "2026-11-05T06:34:21.679Z",
   "year": 2026,
-  "activeCount": 1,
-  "mode": "live",
+  "activeCount": 0,
+  "mode": "latest-inactive",
   "storms": [
     {
       "id": "202631",
       "name": "烟花",
       "englishName": "IN-FA",
-      "active": true,
+      "active": false,
       "startTime": "2026-10-24 02:00:00",
       "endTime": "2026-11-05 11:00:00",
       "warningLevel": "0",
@@ -1555,6 +1555,6 @@
       ]
     }
   ],
-  "notice": "当前展示活动台风。请以当地气象台和政府发布的信息为准。",
-  "dataChangedAt": "2026-11-05T04:18:52.430Z"
+  "notice": "来源系统当前无活动台风，页面展示最近一次已停编台风供回顾。",
+  "dataChangedAt": "2026-11-05T06:34:21.679Z"
 }
