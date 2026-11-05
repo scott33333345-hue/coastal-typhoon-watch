@@ -5,7 +5,7 @@
     "url": "https://typhoon.slt.zj.gov.cn/",
     "listEndpoint": "https://typhoon.slt.zj.gov.cn/Api/TyphoonList/2026"
   },
-  "fetchedAt": "2026-11-04T22:23:39.281Z",
+  "fetchedAt": "2026-11-05T01:02:06.658Z",
   "year": 2026,
   "activeCount": 1,
   "mode": "live",
@@ -16,19 +16,19 @@
       "englishName": "IN-FA",
       "active": true,
       "startTime": "2026-10-24 02:00:00",
-      "endTime": "2026-11-05 05:00:00",
+      "endTime": "2026-11-05 08:00:00",
       "warningLevel": "0",
       "forecastAgency": "中国",
       "latest": {
         "type": "observed",
-        "time": "2026-11-05 05:00:00",
-        "longitude": 139,
-        "latitude": 27.6,
+        "time": "2026-11-05 08:00:00",
+        "longitude": 139.6,
+        "latitude": 28,
         "strength": "强热带风暴",
         "windLevel": 10,
         "windSpeed": 28,
         "pressure": 982,
-        "moveSpeed": 43,
+        "moveSpeed": 58,
         "moveDirection": "北东",
         "radius7": "280|250|360|220",
         "radius10": "100|80|100|80",
@@ -1504,14 +1504,29 @@
           "radius7": "280|250|360|220",
           "radius10": "100|80|100|80",
           "radius12": null
+        },
+        {
+          "type": "observed",
+          "time": "2026-11-05 08:00:00",
+          "longitude": 139.6,
+          "latitude": 28,
+          "strength": "强热带风暴",
+          "windLevel": 10,
+          "windSpeed": 28,
+          "pressure": 982,
+          "moveSpeed": 58,
+          "moveDirection": "北东",
+          "radius7": "280|250|360|220",
+          "radius10": "100|80|100|80",
+          "radius12": null
         }
       ],
       "forecast": [
         {
           "type": "forecast",
-          "time": "2026-11-05 17:00:00",
-          "longitude": 142.6,
-          "latitude": 31,
+          "time": "2026-11-05 20:00:00",
+          "longitude": 144.4,
+          "latitude": 32.6,
           "strength": "强热带风暴",
           "windLevel": 10,
           "windSpeed": 25,
@@ -1526,5 +1541,5 @@
     }
   ],
   "notice": "当前展示活动台风。请以当地气象台和政府发布的信息为准。",
-  "dataChangedAt": "2026-11-04T22:23:39.281Z"
+  "dataChangedAt": "2026-11-05T01:02:06.658Z"
 }
