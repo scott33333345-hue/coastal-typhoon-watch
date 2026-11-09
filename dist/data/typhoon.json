@@ -5,7 +5,7 @@
     "url": "https://typhoon.slt.zj.gov.cn/",
     "listEndpoint": "https://typhoon.slt.zj.gov.cn/Api/TyphoonList/2026"
   },
-  "fetchedAt": "2026-11-09T04:22:54.878Z",
+  "fetchedAt": "2026-11-09T06:41:41.393Z",
   "year": 2026,
   "activeCount": 1,
   "mode": "live",
@@ -16,23 +16,23 @@
       "englishName": "CEMPAKA",
       "active": true,
       "startTime": "2026-11-07 14:00:00",
-      "endTime": "2026-11-09 11:00:00",
+      "endTime": "2026-11-09 14:00:00",
       "warningLevel": "white",
       "forecastAgency": "中国",
       "latest": {
         "type": "observed",
-        "time": "2026-11-09 11:00:00",
-        "longitude": 134.8,
-        "latitude": 23.9,
+        "time": "2026-11-09 14:00:00",
+        "longitude": 134.9,
+        "latitude": 24,
         "strength": "台风",
         "windLevel": 12,
-        "windSpeed": 33,
-        "pressure": 975,
-        "moveSpeed": 12,
+        "windSpeed": 35,
+        "pressure": 970,
+        "moveSpeed": 14,
         "moveDirection": "东北东",
         "radius7": "200|150|250|120",
         "radius10": "60|50|60|50",
-        "radius12": null
+        "radius12": "50|50|50|50"
       },
       "track": [
         {
@@ -274,14 +274,29 @@
           "radius7": "200|150|250|120",
           "radius10": "60|50|60|50",
           "radius12": null
+        },
+        {
+          "type": "observed",
+          "time": "2026-11-09 14:00:00",
+          "longitude": 134.9,
+          "latitude": 24,
+          "strength": "台风",
+          "windLevel": 12,
+          "windSpeed": 35,
+          "pressure": 970,
+          "moveSpeed": 14,
+          "moveDirection": "东北东",
+          "radius7": "200|150|250|120",
+          "radius10": "60|50|60|50",
+          "radius12": "50|50|50|50"
         }
       ],
       "forecast": [
         {
           "type": "forecast",
-          "time": "2026-11-09 23:00:00",
-          "longitude": 136,
-          "latitude": 24.4,
+          "time": "2026-11-10 02:00:00",
+          "longitude": 136.4,
+          "latitude": 24.5,
           "strength": "台风",
           "windLevel": 13,
           "windSpeed": 38,
@@ -294,9 +309,9 @@
         },
         {
           "type": "forecast",
-          "time": "2026-11-10 11:00:00",
-          "longitude": 138.8,
-          "latitude": 24.9,
+          "time": "2026-11-10 14:00:00",
+          "longitude": 139.9,
+          "latitude": 25.3,
           "strength": "台风",
           "windLevel": 13,
           "windSpeed": 40,
@@ -309,9 +324,9 @@
         },
         {
           "type": "forecast",
-          "time": "2026-11-10 23:00:00",
-          "longitude": 142.4,
-          "latitude": 25.8,
+          "time": "2026-11-11 02:00:00",
+          "longitude": 144.1,
+          "latitude": 26.4,
           "strength": "台风",
           "windLevel": 12,
           "windSpeed": 35,
@@ -324,9 +339,9 @@
         },
         {
           "type": "forecast",
-          "time": "2026-11-11 11:00:00",
-          "longitude": 146.5,
-          "latitude": 26.9,
+          "time": "2026-11-11 14:00:00",
+          "longitude": 149.5,
+          "latitude": 27.7,
           "strength": "强热带风暴",
           "windLevel": 11,
           "windSpeed": 30,
@@ -339,28 +354,13 @@
         },
         {
           "type": "forecast",
-          "time": "2026-11-11 23:00:00",
-          "longitude": 150.6,
-          "latitude": 27.5,
+          "time": "2026-11-12 02:00:00",
+          "longitude": 154.4,
+          "latitude": 27.6,
           "strength": "强热带风暴",
           "windLevel": 10,
           "windSpeed": 25,
           "pressure": 985,
-          "moveSpeed": null,
-          "moveDirection": null,
-          "radius7": null,
-          "radius10": null,
-          "radius12": null
-        },
-        {
-          "type": "forecast",
-          "time": "2026-11-12 11:00:00",
-          "longitude": 154,
-          "latitude": 27.5,
-          "strength": "热带风暴",
-          "windLevel": 8,
-          "windSpeed": 20,
-          "pressure": 995,
           "moveSpeed": null,
           "moveDirection": null,
           "radius7": null,
@@ -371,5 +371,5 @@
     }
   ],
   "notice": "当前展示活动台风。请以当地气象台和政府发布的信息为准。",
-  "dataChangedAt": "2026-11-09T04:22:54.878Z"
+  "dataChangedAt": "2026-11-09T06:41:41.393Z"
 }
