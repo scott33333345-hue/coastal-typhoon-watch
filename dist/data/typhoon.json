@@ -5,7 +5,7 @@
     "url": "https://typhoon.slt.zj.gov.cn/",
     "listEndpoint": "https://typhoon.slt.zj.gov.cn/Api/TyphoonList/2026"
   },
-  "fetchedAt": "2026-11-10T03:51:41.700Z",
+  "fetchedAt": "2026-11-10T06:41:54.271Z",
   "year": 2026,
   "activeCount": 1,
   "mode": "live",
@@ -16,19 +16,19 @@
       "englishName": "CEMPAKA",
       "active": true,
       "startTime": "2026-11-07 14:00:00",
-      "endTime": "2026-11-10 11:00:00",
+      "endTime": "2026-11-10 14:00:00",
       "warningLevel": "white",
       "forecastAgency": "中国",
       "latest": {
         "type": "observed",
-        "time": "2026-11-10 11:00:00",
-        "longitude": 138.7,
-        "latitude": 25.2,
+        "time": "2026-11-10 14:00:00",
+        "longitude": 139.7,
+        "latitude": 25.4,
         "strength": "强台风",
         "windLevel": 14,
-        "windSpeed": 45,
-        "pressure": 950,
-        "moveSpeed": 36,
+        "windSpeed": 42,
+        "pressure": 955,
+        "moveSpeed": 39,
         "moveDirection": "东北东",
         "radius7": "200|150|250|200",
         "radius10": "80|80|80|80",
@@ -394,14 +394,29 @@
           "radius7": "200|150|250|200",
           "radius10": "80|80|80|80",
           "radius12": "50|50|50|50"
+        },
+        {
+          "type": "observed",
+          "time": "2026-11-10 14:00:00",
+          "longitude": 139.7,
+          "latitude": 25.4,
+          "strength": "强台风",
+          "windLevel": 14,
+          "windSpeed": 42,
+          "pressure": 955,
+          "moveSpeed": 39,
+          "moveDirection": "东北东",
+          "radius7": "200|150|250|200",
+          "radius10": "80|80|80|80",
+          "radius12": "50|50|50|50"
         }
       ],
       "forecast": [
         {
           "type": "forecast",
-          "time": "2026-11-10 23:00:00",
-          "longitude": 142.8,
-          "latitude": 26.3,
+          "time": "2026-11-11 02:00:00",
+          "longitude": 144.1,
+          "latitude": 26.8,
           "strength": "台风",
           "windLevel": 13,
           "windSpeed": 40,
@@ -414,9 +429,9 @@
         },
         {
           "type": "forecast",
-          "time": "2026-11-11 11:00:00",
-          "longitude": 147.4,
-          "latitude": 27.9,
+          "time": "2026-11-11 14:00:00",
+          "longitude": 149.3,
+          "latitude": 28.5,
           "strength": "台风",
           "windLevel": 12,
           "windSpeed": 35,
@@ -429,9 +444,9 @@
         },
         {
           "type": "forecast",
-          "time": "2026-11-11 23:00:00",
-          "longitude": 152.5,
-          "latitude": 28.9,
+          "time": "2026-11-12 02:00:00",
+          "longitude": 155.1,
+          "latitude": 28.5,
           "strength": "强热带风暴",
           "windLevel": 10,
           "windSpeed": 28,
@@ -446,5 +461,5 @@
     }
   ],
   "notice": "当前展示活动台风。请以当地气象台和政府发布的信息为准。",
-  "dataChangedAt": "2026-11-10T03:51:41.700Z"
+  "dataChangedAt": "2026-11-10T06:41:54.271Z"
 }
